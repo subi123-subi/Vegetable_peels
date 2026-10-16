@@ -113,6 +113,8 @@ ai/models/*.h5
 ai/models/*.tflite
 !ai/models/.gitkeep
 !ai/models/class_labels.json
+!ai/models/model_metrics.json
+!ai/models/smart_peel_mobilenetv3.pt
 
 # Logs
 *.log

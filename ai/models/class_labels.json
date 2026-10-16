@@ -1,0 +1,78 @@
+{
+  "version": "1.0.0",
+  "model_architecture": "MobileNetV3-Small",
+  "input_resolution": [
+    224,
+    224,
+    3
+  ],
+  "normalization": {
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "confidence_threshold": 0.65,
+  "classes": [
+    {
+      "index": 0,
+      "key": "beetroot_peel",
+      "slug": "beetroot",
+      "displayNameEn": "Beetroot Peel",
+      "displayNameTa": "பீட்ரூட் தோல்",
+      "scientificName": "Beta vulgaris",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 1,
+      "key": "carrot_peel",
+      "slug": "carrot",
+      "displayNameEn": "Carrot Peel",
+      "displayNameTa": "கேரட் தோல்",
+      "scientificName": "Daucus carota subsp. sativus",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 2,
+      "key": "cucumber_peel",
+      "slug": "cucumber",
+      "displayNameEn": "Cucumber Peel",
+      "displayNameTa": "வெள்ளரி தோல்",
+      "scientificName": "Cucumis sativus",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 3,
+      "key": "potato_peel",
+      "slug": "potato",
+      "displayNameEn": "Potato Peel",
+      "displayNameTa": "உருளைக்கிழங்கு தோல்",
+      "scientificName": "Solanum tuberosum",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 4,
+      "key": "pumpkin_peel",
+      "slug": "pumpkin",
+      "displayNameEn": "Pumpkin Peel",
+      "displayNameTa": "பூசணிக்காய் தோல்",
+      "scientificName": "Cucurbita moschata",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 5,
+      "key": "unsupported_object",
+      "slug": "unsupported",
+      "displayNameEn": "Unsupported / Non-peel Object",
+      "displayNameTa": "ஆதரிக்கப்படாத பொருள்",
+      "scientificName": "N/A",
+      "isSupportedPeel": false
+    }
+  ]
+}
