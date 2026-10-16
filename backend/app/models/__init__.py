@@ -20,6 +20,7 @@ from app.models.scan import (
     FeedbackRecord,
 )
 from app.models.translation import Translation
+from app.models.waste_tracking import WasteLog
 
 __all__ = [
     "UserRole",

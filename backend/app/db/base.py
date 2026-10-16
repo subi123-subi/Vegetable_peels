@@ -8,3 +8,5 @@ from app.models.safety import SafetyRule  # noqa
 from app.models.reuse import ReuseMethod, ReuseRecommendation  # noqa
 from app.models.scan import AIModelVersion, ScanRecord, ScanPrediction, UserConfirmation, NutrientReport, FeedbackRecord  # noqa
 from app.models.translation import Translation  # noqa
+from app.models.waste_tracking import WasteLog  # noqa
+
