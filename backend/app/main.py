@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.api.v1.api import api_router
+import app.db.base  # noqa: F401 - Register all SQLAlchemy mappers
 
 # Configure structured logging
 logging.basicConfig(
