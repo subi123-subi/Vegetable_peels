@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/localization/app_locale.dart';
 import '../../core/theme/app_theme.dart';
-import '../../models/app_models.dart';
+import '../../models/vegetable_detail_model.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/nutrient_providers.dart';
 
 class NutrientResultsScreen extends ConsumerWidget {
   const NutrientResultsScreen({super.key});
@@ -14,22 +15,80 @@ class NutrientResultsScreen extends ConsumerWidget {
     final lang = ref.watch(localeProvider);
     final isTamil = lang == AppLanguage.ta;
     final veg = ref.watch(selectedVegetableProvider);
-    final nutrients = ref.watch(nutrientsForSelectedVegetableProvider);
 
-    final vitamins = nutrients.where((n) => n.category == 'vitamin').toList();
-    final minerals = nutrients.where((n) => n.category == 'mineral').toList();
-    final others = nutrients.where((n) => n.category == 'other').toList();
+    // Watch live scientific profile from backend
+    final profileAsync = ref.watch(vegetableNutrientProfileAsyncProvider(veg.slug));
+    final fallbackNutrients = ref.watch(nutrientsForSelectedVegetableProvider);
+
+    final profile = profileAsync.value;
+    final hasBackendMeasurements = profile != null && profile.measurements.isNotEmpty;
+
+    // Categorized measurements
+    final List<NutrientDetailItem> vitamins = hasBackendMeasurements
+        ? profile.measurements.where((m) => m.category == 'vitamin').toList()
+        : fallbackNutrients
+            .where((n) => n.category == 'vitamin')
+            .map((n) => NutrientDetailItem(
+                  nutrientId: 0,
+                  nutrientCode: n.code,
+                  nutrientNameEn: n.nameEn,
+                  nutrientNameTa: n.nameTa,
+                  category: n.category,
+                  concentrationPer100g: n.concentrationPer100g,
+                  unit: n.unit,
+                  biologicalRoleEn: n.biologicalRoleEn,
+                  biologicalRoleTa: n.biologicalRoleTa,
+                ))
+            .toList();
+
+    final List<NutrientDetailItem> minerals = hasBackendMeasurements
+        ? profile.measurements.where((m) => m.category == 'mineral').toList()
+        : fallbackNutrients
+            .where((n) => n.category == 'mineral')
+            .map((n) => NutrientDetailItem(
+                  nutrientId: 0,
+                  nutrientCode: n.code,
+                  nutrientNameEn: n.nameEn,
+                  nutrientNameTa: n.nameTa,
+                  category: n.category,
+                  concentrationPer100g: n.concentrationPer100g,
+                  unit: n.unit,
+                  biologicalRoleEn: n.biologicalRoleEn,
+                  biologicalRoleTa: n.biologicalRoleTa,
+                ))
+            .toList();
+
+    final List<NutrientDetailItem> others = hasBackendMeasurements
+        ? profile.measurements.where((m) => m.category == 'other').toList()
+        : fallbackNutrients
+            .where((n) => n.category == 'other')
+            .map((n) => NutrientDetailItem(
+                  nutrientId: 0,
+                  nutrientCode: n.code,
+                  nutrientNameEn: n.nameEn,
+                  nutrientNameTa: n.nameTa,
+                  category: n.category,
+                  concentrationPer100g: n.concentrationPer100g,
+                  unit: n.unit,
+                  biologicalRoleEn: n.biologicalRoleEn,
+                  biologicalRoleTa: n.biologicalRoleTa,
+                ))
+            .toList();
+
+    final isDryBasis = profile?.freshOrDryBasis == 'dry_weight';
+    final dataStatus = profile?.dataQualityStatus ?? 'validated_peel_measurement';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 850),
+          constraints: const BoxConstraints(maxWidth: 880),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Header Summary Card
               Card(
+                elevation: 1.5,
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Row(
@@ -49,20 +108,40 @@ class NutrientResultsScreen extends ConsumerWidget {
                               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.primaryDark),
                             ),
                             Text(
-                              '${veg.scientificName} • ${veg.plantPart} • 100g Fresh Weight Basis',
+                              '${veg.scientificName} • ${veg.plantPart} • 100g ${isDryBasis ? "Dry" : "Fresh"} Weight Basis',
                               style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                             ),
                             const SizedBox(height: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: AppTheme.softMint,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                isTamil ? 'தரவு நிலை: சரிபார்க்கப்பட்ட அளவீடு' : 'Data Status: Validated Peel Profile (IFCT/USDA)',
-                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.primaryDark),
-                              ),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.softMint,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    dataStatus == 'validated_peel_measurement'
+                                        ? (isTamil ? 'சரிபார்க்கப்பட்ட அளவீடு (IFCT/USDA)' : 'Validated Peel Profile (IFCT 2017 & USDA)')
+                                        : (isTamil ? 'குறிப்பீட்டு மதிப்பீடு' : 'Indicative Botanical Estimate'),
+                                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.primaryDark),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.shade50,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.blue.shade200, width: 0.8),
+                                  ),
+                                  child: Text(
+                                    isDryBasis ? 'Dry Weight Basis' : 'Fresh Weight Basis',
+                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.blue.shade800),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -79,6 +158,7 @@ class NutrientResultsScreen extends ConsumerWidget {
                 runSpacing: 10,
                 children: [
                   ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryGreen, foregroundColor: Colors.white),
                     onPressed: () => context.go('/nutrient-estimation'),
                     icon: const Icon(Icons.calculate_outlined),
                     label: Text(isTamil ? 'எடை மூலம் கணக்கிடுக' : 'Estimate by Peel Weight'),
@@ -146,6 +226,48 @@ class NutrientResultsScreen extends ConsumerWidget {
                 isTamil: isTamil,
                 onExplore: () => context.go('/antioxidant-details'),
               ),
+              const SizedBox(height: 20),
+
+              // Scientific Citation Card
+              if (profile?.source != null)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.menu_book_outlined, size: 20, color: AppTheme.primaryDark),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isTamil ? 'அறிவியல் ஆதாரம் (Scientific Reference)' : 'Scientific Source Citation',
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppTheme.primaryDark),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${profile!.source!.title} (${profile.source!.publicationYear ?? 2022}). ${profile.source!.authors ?? ""}. ${profile.source!.journalOrPublisher ?? ""}.',
+                              style: TextStyle(fontSize: 11, color: Colors.grey.shade700, height: 1.3),
+                            ),
+                            if (profile.samplePrepMethod != null) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                'Method: ${profile.samplePrepMethod}',
+                                style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: Colors.grey.shade600),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),
@@ -159,11 +281,12 @@ class NutrientResultsScreen extends ConsumerWidget {
     required String subtitle,
     required IconData icon,
     required Color color,
-    required List<NutrientItem> items,
+    required List<NutrientDetailItem> items,
     required bool isTamil,
     required VoidCallback onExplore,
   }) {
     return Card(
+      elevation: 1,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -172,22 +295,26 @@ class NutrientResultsScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor: color.withValues(alpha: 0.12),
-                      child: Icon(icon, color: color, size: 20),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-                        Text(subtitle, style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
-                      ],
-                    ),
-                  ],
+                Expanded(
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundColor: color.withValues(alpha: 0.12),
+                        child: Icon(icon, color: color, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+                            Text(subtitle, style: TextStyle(color: Colors.grey.shade600, fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 TextButton(
                   onPressed: onExplore,
@@ -206,34 +333,53 @@ class NutrientResultsScreen extends ConsumerWidget {
               )
             else
               ...items.map((nut) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(nut.displayName(isTamil), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
-                          if (nut.displayRole(isTamil).isNotEmpty)
-                            Text(nut.displayRole(isTamil), style: TextStyle(color: Colors.grey.shade600, fontSize: 11), maxLines: 1, overflow: TextOverflow.ellipsis),
-                        ],
-                      ),
+                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(nut.displayName(isTamil), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                              if (nut.displayRole(isTamil).isNotEmpty)
+                                Text(
+                                  nut.displayRole(isTamil),
+                                  style: TextStyle(color: Colors.grey.shade600, fontSize: 11),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                '${nut.concentrationPer100g} ${nut.unit}',
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                              ),
+                            ),
+                            if (nut.dataQualityStatus != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Text(
+                                  nut.dataQualityStatus!,
+                                  style: TextStyle(fontSize: 9, color: Colors.grey.shade500),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '${nut.concentrationPer100g} ${nut.unit}',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                      ),
-                    ),
-                  ],
-                ),
-              )),
+                  )),
           ],
         ),
       ),
