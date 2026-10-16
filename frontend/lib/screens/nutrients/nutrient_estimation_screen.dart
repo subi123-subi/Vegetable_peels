@@ -39,7 +39,7 @@ class _NutrientEstimationScreenState extends ConsumerState<NutrientEstimationScr
     ref.read(currentScanProvider.notifier).setWeight(weight);
   }
 
-  Future<void> _handleSaveReport(BuildContext context, EstimationResultModel result, bool isTamil) async {
+  Future<void> _handleSaveReport(EstimationResultModel result, bool isTamil) async {
     setState(() {
       _isSavingReport = true;
     });
@@ -69,38 +69,37 @@ class _NutrientEstimationScreenState extends ConsumerState<NutrientEstimationScr
         safetyNotes: {'status': 'safe_edible', 'hazards': []},
       );
 
-      if (mounted) {
-        setState(() {
-          _isSavingReport = false;
-        });
+      if (!mounted) return;
 
-        if (report != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: AppTheme.primaryDark,
-              content: Text(
-                isTamil
-                    ? 'அறிக்கை உருவாக்கப்பட்டது: ${report.reportUuid}'
-                    : 'Report generated successfully: ${report.reportUuid}',
-              ),
-              action: SnackBarAction(
-                label: isTamil ? 'காண்க' : 'View',
-                textColor: const Color(0xFFFFB300),
-                onPressed: () => context.go('/report-download'),
-              ),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isSavingReport = false;
-        });
+      setState(() {
+        _isSavingReport = false;
+      });
+
+      if (report != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving report: $e')),
+          SnackBar(
+            backgroundColor: AppTheme.primaryDark,
+            content: Text(
+              isTamil
+                  ? 'அறிக்கை உருவாக்கப்பட்டது: ${report.reportUuid}'
+                  : 'Report generated successfully: ${report.reportUuid}',
+            ),
+            action: SnackBarAction(
+              label: isTamil ? 'காண்க' : 'View',
+              textColor: const Color(0xFFFFB300),
+              onPressed: () => context.go('/report-download'),
+            ),
+          ),
         );
       }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isSavingReport = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving report: $e')),
+      );
     }
   }
 
@@ -183,7 +182,7 @@ class _NutrientEstimationScreenState extends ConsumerState<NutrientEstimationScr
                             );
                           },
                           loading: () => const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
-                          error: (_, __) => const SizedBox(),
+                          error: (_, _) => const SizedBox(),
                         ),
                       ],
                     ),
@@ -374,7 +373,7 @@ class _NutrientEstimationScreenState extends ConsumerState<NutrientEstimationScr
                                   ),
                                   const SizedBox(height: 6),
                                   DropdownButtonFormField<String>(
-                                    value: params.populationGroup,
+                                    initialValue: params.populationGroup,
                                     isExpanded: true,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -423,7 +422,7 @@ class _NutrientEstimationScreenState extends ConsumerState<NutrientEstimationScr
                                   ),
                                   const SizedBox(height: 6),
                                   DropdownButtonFormField<int>(
-                                    value: params.servings,
+                                    initialValue: params.servings,
                                     isExpanded: true,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -710,7 +709,7 @@ class _NutrientEstimationScreenState extends ConsumerState<NutrientEstimationScr
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.public, color: const Color(0xFFFFB300), size: 22),
+                                    const Icon(Icons.public, color: Color(0xFFFFB300), size: 22),
                                     const SizedBox(width: 10),
                                     Text(
                                       isTamil ? 'உணவுக் கழிவு தவிர்ப்பு மற்றும் சுற்றுச்சூழல் தாக்கம்' : 'Food Waste Diversion & Ecological Impact',
@@ -755,7 +754,7 @@ class _NutrientEstimationScreenState extends ConsumerState<NutrientEstimationScr
                           children: [
                             Expanded(
                               child: OutlinedButton.icon(
-                                onPressed: _isSavingReport ? null : () => _handleSaveReport(context, result, isTamil),
+                                onPressed: _isSavingReport ? null : () => _handleSaveReport(result, isTamil),
                                 icon: _isSavingReport
                                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                                     : const Icon(Icons.save_outlined),

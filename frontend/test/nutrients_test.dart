@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_peel_ai/screens/nutrients/nutrient_results_screen.dart';
 import 'package:smart_peel_ai/screens/nutrients/vitamin_details_screen.dart';
 import 'package:smart_peel_ai/screens/nutrients/mineral_details_screen.dart';
-import 'package:smart_peel_ai/providers/app_providers.dart';
 import 'package:smart_peel_ai/providers/nutrient_providers.dart';
 
 void main() {
