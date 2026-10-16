@@ -9,6 +9,7 @@ from app.api.v1.endpoints import (
     waste_tracking,
     auth,
     admin,
+    translations,
 )
 
 api_router = APIRouter()
@@ -21,3 +22,4 @@ api_router.include_router(safety.router, prefix="/safety", tags=["Food Safety En
 api_router.include_router(reuse.router, prefix="/reuse", tags=["Waste Utilization Engine"])
 api_router.include_router(waste_tracking.router, prefix="/waste-tracking", tags=["Smart Waste Tracking & Diversion"])
 api_router.include_router(admin.router, prefix="/admin", tags=["Administrator Console & Audit"])
+api_router.include_router(translations.router, prefix="/translations", tags=["Bilingual Localization & Dictionary"])
