@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +7,7 @@ import '../../core/localization/app_locale.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/app_models.dart';
 import '../../providers/app_providers.dart';
+import '../../providers/scan_provider.dart';
 
 class ImageUploadScreen extends ConsumerStatefulWidget {
   const ImageUploadScreen({super.key});
@@ -17,14 +19,22 @@ class ImageUploadScreen extends ConsumerStatefulWidget {
 class _ImageUploadScreenState extends ConsumerState<ImageUploadScreen> {
   final ImagePicker _picker = ImagePicker();
   XFile? _selectedFile;
+  Uint8List? _selectedBytes;
   bool _isAnalyzing = false;
 
   Future<void> _pickImage() async {
     try {
-      final XFile? file = await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? file = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
       if (file != null) {
+        final bytes = await file.readAsBytes();
         setState(() {
           _selectedFile = file;
+          _selectedBytes = bytes;
         });
       }
     } catch (e) {
@@ -35,23 +45,50 @@ class _ImageUploadScreenState extends ConsumerState<ImageUploadScreen> {
     }
   }
 
-  void _runIdentification(VegetableItem targetVeg) {
+  Future<void> _runIdentification() async {
+    if (_selectedBytes == null && _selectedFile == null) return;
     setState(() => _isAnalyzing = true);
-    Future.delayed(const Duration(milliseconds: 800), () {
+
+    final bytes = _selectedBytes ?? await _selectedFile!.readAsBytes();
+    final filename = _selectedFile?.name ?? 'upload.jpg';
+
+    final result = await ref.read(scanPredictionProvider.notifier).predictFromBytes(
+      bytes,
+      filename,
+      previewPath: _selectedFile?.path,
+    );
+
+    if (!mounted) return;
+    setState(() => _isAnalyzing = false);
+
+    if (result != null) {
+      final allVegs = ref.read(catalogueProvider);
+      VegetableItem? targetVeg;
+      if (result.predictedVegetableSlug != null) {
+        targetVeg = allVegs.where((v) => v.slug == result.predictedVegetableSlug).firstOrNull;
+      }
+      final safeTargetVeg = targetVeg ?? allVegs.first;
+
       final scanResult = ScanResult(
-        scanId: 'SCN-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
-        imagePath: _selectedFile?.path ?? 'sample_upload.jpg',
-        predictedVegetable: targetVeg,
-        confidence: 0.92,
+        scanId: 'SCN-${result.scanId}',
+        imagePath: _selectedFile?.path ?? filename,
+        predictedVegetable: safeTargetVeg,
+        confidence: result.confidence,
         isConfirmed: false,
-        scannedAt: DateTime.now(),
+        scannedAt: result.scannedAt,
       );
       ref.read(currentScanProvider.notifier).setScan(scanResult);
-      ref.read(selectedVegetableProvider.notifier).select(targetVeg);
-      if (!mounted) return;
-      setState(() => _isAnalyzing = false);
+      ref.read(selectedVegetableProvider.notifier).select(safeTargetVeg);
+
       context.go('/identification');
-    });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('AI identification service error. Please try another image.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -81,113 +118,105 @@ class _ImageUploadScreenState extends ConsumerState<ImageUploadScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        isTamil ? 'JPEG அல்லது PNG வடிவம், தெளிவான வெளிச்சம்' : 'Supports JPG, PNG up to 10MB. Clear natural lighting recommended.',
+                        isTamil ? 'JPEG அல்லது PNG வடிவம், 10MB வரை அனுமதிக்கப்படுகிறது' : 'Supports JPG, PNG up to 10MB. Clear natural lighting recommended.',
                         style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
 
                       // Selected image status or drop-area placeholder
-                      Container(
-                        height: 200,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: AppTheme.surfaceMuted,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.grey.shade300, style: BorderStyle.solid),
-                        ),
-                        child: _selectedFile != null
-                            ? Column(
+                      if (_selectedBytes != null)
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppTheme.primaryGreen, width: 2),
+                            borderRadius: BorderRadius.circular(12),
+                            color: AppTheme.softMint,
+                          ),
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.memory(
+                                  _selectedBytes!,
+                                  height: 180,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                _selectedFile?.name ?? 'Selected Image',
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                              ),
+                              Text(
+                                '${(_selectedBytes!.lengthInBytes / 1024).toStringAsFixed(1)} KB',
+                                style: TextStyle(color: Colors.grey.shade600, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        InkWell(
+                          onTap: _pickImage,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            height: 160,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300, width: 2, style: BorderStyle.solid),
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.grey.shade50,
+                            ),
+                            child: Center(
+                              child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 48),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    'Selected: ${_selectedFile!.name}',
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  TextButton(
-                                    onPressed: _pickImage,
-                                    child: const Text('Change File'),
-                                  ),
-                                ],
-                              )
-                            : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.add_photo_alternate_outlined, size: 48, color: Colors.grey),
+                                  Icon(Icons.add_photo_alternate_outlined, size: 48, color: Colors.grey.shade400),
                                   const SizedBox(height: 8),
                                   Text(
-                                    isTamil ? 'கோப்பை தேர்வு செய்ய கிளிக் செய்யவும்' : 'Click to Browse Files',
-                                    style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.w600),
+                                    isTamil ? 'கோப்பை தேர்வு செய்ய கிளிக் செய்க' : 'Click to select an image from device',
+                                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                                   ),
                                 ],
                               ),
-                      ),
+                            ),
+                          ),
+                        ),
+
                       const SizedBox(height: 20),
 
-                      ElevatedButton.icon(
-                        onPressed: _isAnalyzing ? null : _pickImage,
-                        icon: const Icon(Icons.folder_open),
-                        label: Text(isTamil ? 'கோப்பகத்திலிருந்து தேர்வு செய்க' : 'Browse Gallery / Files'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
+                      if (_isAnalyzing)
+                        const Column(
+                          children: [
+                            CircularProgressIndicator(color: AppTheme.primaryGreen),
+                            SizedBox(height: 12),
+                            Text(
+                              'Analyzing peel with MobileNetV3 AI Engine...',
+                              style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.primaryDark),
+                            ),
+                          ],
+                        )
+                      else
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: _pickImage,
+                                icon: const Icon(Icons.file_open),
+                                label: Text(isTamil ? 'மாற்று படம்' : 'Select File'),
+                              ),
+                            ),
+                            if (_selectedBytes != null) ...[
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: _runIdentification,
+                                  icon: const Icon(Icons.analytics_outlined),
+                                  label: Text(isTamil ? 'ஆரம்பிக்கவும்' : 'Analyze Peel'),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
-                      ),
-
-                      if (_selectedFile != null) ...[
-                        const SizedBox(height: 12),
-                        ElevatedButton.icon(
-                          onPressed: _isAnalyzing ? null : () => _runIdentification(initialCatalogue[0]),
-                          icon: const Icon(Icons.analytics_outlined),
-                          label: _isAnalyzing
-                              ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                              : Text(isTamil ? 'ஏஐ மூலம் ஆய்வு செய்க' : 'Run AI Identification'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.leafGreen,
-                            minimumSize: const Size(double.infinity, 50),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Preset Samples Shortcut
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isTamil ? 'விரைவு சோதனை மாதிரிகள்:' : 'Or Select a Preset Test Sample:',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 8,
-                        children: [
-                          ChoiceChip(
-                            label: const Text('Carrot Peel'),
-                            selected: false,
-                            onSelected: (_) => _runIdentification(initialCatalogue[0]),
-                          ),
-                          ChoiceChip(
-                            label: const Text('Potato Peel'),
-                            selected: false,
-                            onSelected: (_) => _runIdentification(initialCatalogue[1]),
-                          ),
-                          ChoiceChip(
-                            label: const Text('Beetroot Peel'),
-                            selected: false,
-                            onSelected: (_) => _runIdentification(initialCatalogue[2]),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
