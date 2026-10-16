@@ -8,14 +8,20 @@ class ApiClient {
   late final Dio dio;
 
   ApiClient._internal() {
+    const envUrl = String.fromEnvironment('API_BASE_URL');
     String baseUrl = 'http://127.0.0.1:8000/api/v1';
 
-    // In web mode, dynamically use the current host so mobile phones on local Wi-Fi can reach the API
-    if (kIsWeb) {
+    if (envUrl.isNotEmpty) {
+      baseUrl = envUrl;
+    } else if (kIsWeb) {
+      // In web mode, dynamically use the current host so mobile phones on local Wi-Fi can reach the API
       final host = Uri.base.host;
       if (host.isNotEmpty && host != '0.0.0.0') {
         baseUrl = 'http://$host:8000/api/v1';
       }
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      // Android Emulator loopback alias to host machine
+      baseUrl = 'http://10.0.2.2:8000/api/v1';
     }
 
     dio = Dio(
