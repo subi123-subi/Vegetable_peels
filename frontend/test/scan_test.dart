@@ -1,10 +1,8 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_peel_ai/models/scan_prediction_model.dart';
 import 'package:smart_peel_ai/models/app_models.dart';
-import 'package:smart_peel_ai/providers/app_providers.dart';
 import 'package:smart_peel_ai/providers/scan_provider.dart';
 import 'package:smart_peel_ai/screens/scan/vegetable_identification_screen.dart';
 
@@ -95,7 +93,7 @@ void main() {
         predictedDisplayNameTa: 'கேரட் தோல்',
         predictedPlantPart: 'Peel / தோல்',
         confidence: 0.965,
-        modelVersion: '1.0.0',
+        modelVersion: 'v1.0.0',
         isSupportedPeel: true,
         confirmationRequired: true,
         isUncertain: false,
@@ -117,10 +115,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            scanPredictionProvider.overrideWith(() {
-              final notifier = ScanNotifier();
-              return notifier;
-            }),
+            scanPredictionProvider.overrideWith(() => ScanNotifier(mockModel)),
           ],
           child: const MaterialApp(
             home: Scaffold(

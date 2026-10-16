@@ -6,8 +6,11 @@ import '../models/scan_prediction_model.dart';
 import 'app_providers.dart';
 
 class ScanNotifier extends Notifier<AsyncValue<ScanPredictResponseModel?>> {
+  final ScanPredictResponseModel? _initialValue;
+  ScanNotifier([this._initialValue]);
+
   @override
-  AsyncValue<ScanPredictResponseModel?> build() => const AsyncData(null);
+  AsyncValue<ScanPredictResponseModel?> build() => AsyncData(_initialValue);
 
   Future<ScanPredictResponseModel?> predictFromBytes(
     Uint8List bytes,
@@ -86,6 +89,10 @@ class ScanNotifier extends Notifier<AsyncValue<ScanPredictResponseModel?>> {
 
   void reset() {
     state = const AsyncData(null);
+  }
+
+  void setPredictionForTest(ScanPredictResponseModel model) {
+    state = AsyncData(model);
   }
 }
 

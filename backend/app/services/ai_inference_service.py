@@ -67,6 +67,26 @@ class AIInferenceService:
             ]
         )
 
+    def reload_model(self):
+        """Force reload model weights and class labels."""
+        self._initialize()
+
+    @property
+    def weights_path(self) -> str:
+        return str(MODEL_PATH)
+
+    @property
+    def device(self) -> str:
+        return "cpu"
+
+    @property
+    def model(self):
+        return self._model
+
+    @property
+    def class_labels(self):
+        return self._metadata.get("classes", []) if self._metadata else []
+
     @property
     def metadata(self) -> Dict[str, Any]:
         return self._metadata
@@ -141,3 +161,7 @@ class AIInferenceService:
 
 
 ai_inference_service = AIInferenceService()
+
+
+def get_inference_service() -> AIInferenceService:
+    return ai_inference_service
