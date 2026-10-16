@@ -116,5 +116,8 @@ ai/models/*.tflite
 !ai/models/model_metrics.json
 !ai/models/smart_peel_mobilenetv3.pt
 
-# Logs
+# User Uploads
+uploads/
+**/uploads/
+
 *.log
