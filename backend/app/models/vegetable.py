@@ -54,8 +54,10 @@ class Vegetable(Base):
     aliases: Mapped[List["VegetableAlias"]] = relationship("VegetableAlias", back_populates="vegetable", cascade="all, delete-orphan")
     images: Mapped[List["VegetableImage"]] = relationship("VegetableImage", back_populates="vegetable", cascade="all, delete-orphan")
     nutrient_profiles: Mapped[List["NutrientProfile"]] = relationship("NutrientProfile", back_populates="vegetable", cascade="all, delete-orphan")
+    peel_yield_ratio: Mapped[Optional["PeelYieldRatio"]] = relationship("PeelYieldRatio", back_populates="vegetable", uselist=False, cascade="all, delete-orphan")
     safety_rules: Mapped[List["SafetyRule"]] = relationship("SafetyRule", back_populates="vegetable", cascade="all, delete-orphan")
     reuse_recommendations: Mapped[List["ReuseRecommendation"]] = relationship("ReuseRecommendation", back_populates="vegetable", cascade="all, delete-orphan")
+
 
 
 class VegetableAlias(Base):

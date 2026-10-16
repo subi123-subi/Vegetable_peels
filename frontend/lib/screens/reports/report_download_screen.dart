@@ -134,6 +134,15 @@ class ReportDownloadScreen extends ConsumerWidget {
                           veg.knownHazardsEn ?? 'Wash with clean water before any culinary preparation.',
                           style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
                         ),
+                        // Food Waste Diversion & Ecological Impact
+                        Text(
+                          '4. Food Waste Diversion & Ecological Impact',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey.shade800),
+                        ),
+                        const SizedBox(height: 8),
+                        _buildDocRow('Wet Organic Waste Diverted', '${(weight / 1000.0).toStringAsFixed(3)} kg from municipal landfill'),
+                        _buildDocRow('Avoided GHG Emissions', '${((weight / 1000.0) * 0.52).toStringAsFixed(3)} kg CO₂e greenhouse gas prevented'),
+                        _buildDocRow('Compost Humus Yield Potential', '${((weight / 1000.0) * 0.25).toStringAsFixed(3)} kg finished organic compost'),
                         const SizedBox(height: 16),
 
                         // Disclaimer

@@ -506,6 +506,19 @@ def init_db(db: Session) -> None:
     db.commit()
     logger.info("Database successfully seeded with 50 vegetables, 29 nutrients, plant parts, safety rules, and AI model baseline!")
 
+    # Ingest Phase 5 and Phase 6 data
+    try:
+        from app.db.seed_phase5_nutrients import seed_phase5_nutrient_datasets
+        seed_phase5_nutrient_datasets(db)
+    except Exception as e:
+        logger.warning(f"Phase 5 seeding note: {e}")
+
+    try:
+        from app.db.seed_phase6_estimation import seed_phase6_peel_yield_and_dri
+        seed_phase6_peel_yield_and_dri(db)
+    except Exception as e:
+        logger.warning(f"Phase 6 seeding note: {e}")
+
 
 if __name__ == "__main__":
     db = SessionLocal()

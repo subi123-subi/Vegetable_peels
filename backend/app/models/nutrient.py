@@ -75,3 +75,38 @@ class NutrientMeasurement(Base):
 
     profile: Mapped["NutrientProfile"] = relationship("NutrientProfile", back_populates="measurements")
     nutrient: Mapped["Nutrient"] = relationship("Nutrient", back_populates="measurements")
+
+
+class PeelYieldRatio(Base):
+    __tablename__ = "peel_yield_ratios"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    vegetable_id: Mapped[int] = mapped_column(Integer, ForeignKey("vegetables.id"), unique=True, nullable=False, index=True)
+    average_peel_percentage: Mapped[float] = mapped_column(Float, nullable=False)
+    min_peel_percentage: Mapped[float] = mapped_column(Float, nullable=False)
+    max_peel_percentage: Mapped[float] = mapped_column(Float, nullable=False)
+    moisture_percentage_fresh: Mapped[float] = mapped_column(Float, nullable=False)
+    dry_matter_percentage: Mapped[float] = mapped_column(Float, nullable=False)
+    water_loss_dehydration_factor: Mapped[float] = mapped_column(Float, default=0.15)
+    pulp_comparison_notes_en: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    pulp_comparison_notes_ta: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    source_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("scientific_sources.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+
+    vegetable: Mapped["Vegetable"] = relationship("Vegetable", back_populates="peel_yield_ratio")
+    source: Mapped[Optional["ScientificSource"]] = relationship("ScientificSource")
+
+
+class DailyReferenceIntake(Base):
+    __tablename__ = "daily_reference_intakes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    nutrient_code: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    population_group: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    rda_value: Mapped[float] = mapped_column(Float, nullable=False)
+    unit: Mapped[str] = mapped_column(String(20), nullable=False)
+    standard_authority: Mapped[str] = mapped_column(String(50), default="ICMR-NIN 2020")
+    notes_en: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    notes_ta: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+
