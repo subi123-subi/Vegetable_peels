@@ -1,5 +1,6 @@
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import Response
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import desc, func
 from app.db.session import get_db
@@ -32,6 +33,7 @@ from app.schemas.estimation import (
     NutrientReportResponse,
 )
 from app.services.estimation_service import calculate_nutrient_estimation
+from app.services.pdf_report_service import generate_nutrient_pdf
 import uuid
 
 router = APIRouter()
@@ -396,6 +398,49 @@ def get_nutrient_report(
         calculations=report.calculations,
         safety_notes=report.safety_notes,
         created_at=report.created_at,
+    )
+
+
+@router.get("/reports/{report_uuid}/pdf", summary="Download Nutrient Report PDF")
+def download_nutrient_report_pdf(
+    report_uuid: str,
+    db: Session = Depends(get_db),
+):
+    """Generates and serves a publication-grade PDF report for an archived nutrient calculation."""
+    report = db.query(NutrientReport).filter(NutrientReport.report_uuid == report_uuid.strip()).first()
+    if not report:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Nutrient report '{report_uuid}' not found.",
+        )
+    calc_data = dict(report.calculations or {})
+    calc_data["safety_notes"] = report.safety_notes
+    calc_data["total_weight_grams"] = report.total_weight_grams
+    pdf_bytes = generate_nutrient_pdf(calc_data, report_uuid=report.report_uuid)
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=SmartPeel_Report_{report.report_uuid}.pdf"
+        },
+    )
+
+
+@router.post("/reports/preview-pdf", summary="Generate On-The-Fly PDF from Estimation Input")
+def preview_nutrient_estimation_pdf(
+    payload: EstimationInput,
+    db: Session = Depends(get_db),
+):
+    """Calculates nutrient estimations and returns an on-the-fly generated PDF report directly."""
+    estimation = calculate_nutrient_estimation(db=db, input_data=payload)
+    est_dict = estimation.model_dump()
+    pdf_bytes = generate_nutrient_pdf(est_dict, report_uuid="RPT-ONTHEFLY")
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=SmartPeel_Estimation_{payload.vegetable_slug}.pdf"
+        },
     )
 
 
