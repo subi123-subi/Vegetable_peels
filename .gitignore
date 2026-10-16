@@ -107,10 +107,12 @@ ai/datasets/raw/*
 !ai/datasets/raw/.gitkeep
 ai/datasets/processed/*
 !ai/datasets/processed/.gitkeep
+!ai/datasets/processed/dataset_summary.json
 ai/models/*.keras
 ai/models/*.h5
 ai/models/*.tflite
 !ai/models/.gitkeep
+!ai/models/class_labels.json
 
 # Logs
 *.log

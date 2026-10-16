@@ -1,0 +1,43 @@
+{
+  "classes": [
+    "carrot_peel",
+    "potato_peel",
+    "beetroot_peel",
+    "cucumber_peel",
+    "pumpkin_peel",
+    "unsupported_object"
+  ],
+  "splits": {
+    "train": {
+      "carrot_peel": 42,
+      "potato_peel": 42,
+      "beetroot_peel": 42,
+      "cucumber_peel": 42,
+      "pumpkin_peel": 42,
+      "unsupported_object": 42
+    },
+    "val": {
+      "carrot_peel": 9,
+      "potato_peel": 9,
+      "beetroot_peel": 9,
+      "cucumber_peel": 9,
+      "pumpkin_peel": 9,
+      "unsupported_object": 9
+    },
+    "test": {
+      "carrot_peel": 9,
+      "potato_peel": 9,
+      "beetroot_peel": 9,
+      "cucumber_peel": 9,
+      "pumpkin_peel": 9,
+      "unsupported_object": 9
+    }
+  },
+  "total_images": 360,
+  "input_resolution": [
+    224,
+    224,
+    3
+  ],
+  "duplicates_removed": 0
+}
