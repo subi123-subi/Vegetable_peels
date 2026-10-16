@@ -82,10 +82,15 @@ class _ImageUploadScreenState extends ConsumerState<ImageUploadScreen> {
 
       context.go('/identification');
     } else {
+      final err = ref.read(scanPredictionProvider).error;
+      final msg = err != null
+          ? 'Error: $err'
+          : 'AI identification service error. Please try another image.';
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('AI identification service error. Please try another image.'),
+        SnackBar(
+          content: Text(msg),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
         ),
       );
     }

@@ -103,10 +103,15 @@ class _CameraScanScreenState extends ConsumerState<CameraScanScreen> {
 
       context.go('/identification');
     } else {
+      final err = ref.read(scanPredictionProvider).error;
+      final msg = err != null
+          ? 'Error: $err'
+          : 'AI identification service error. Please try again.';
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('AI identification service error. Please try again.'),
+        SnackBar(
+          content: Text(msg),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
         ),
       );
     }
