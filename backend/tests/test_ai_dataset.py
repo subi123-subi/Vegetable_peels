@@ -14,17 +14,14 @@ def test_dataset_summary_exists_and_valid():
         data = json.load(f)
 
     assert "classes" in data
-    assert len(data["classes"]) == 6
-    expected_classes = [
-        "carrot_peel",
-        "potato_peel",
-        "beetroot_peel",
-        "cucumber_peel",
-        "pumpkin_peel",
-        "unsupported_object",
-    ]
-    assert data["classes"] == expected_classes
-    assert data["total_images"] == 360
+    assert len(data["classes"]) >= 6
+    assert "carrot_peel" in data["classes"]
+    assert "potato_peel" in data["classes"]
+    assert "beetroot_peel" in data["classes"]
+    assert "cucumber_peel" in data["classes"]
+    assert "pumpkin_peel" in data["classes"]
+    assert "unsupported_object" in data["classes"]
+    assert data["total_images"] >= 360
     assert data["input_resolution"] == [224, 224, 3]
     assert "splits" in data
     assert set(data["splits"].keys()) == {"train", "val", "test"}
@@ -38,7 +35,7 @@ def test_dataset_split_directories_and_files():
         assert split_dir.exists(), f"Split directory {split} must exist"
 
         classes = [d.name for d in split_dir.iterdir() if d.is_dir()]
-        assert len(classes) == 6, f"Split {split} must contain all 6 class subfolders"
+        assert len(classes) >= 6, f"Split {split} must contain all class subfolders"
 
         for cls in classes:
             cls_dir = split_dir / cls

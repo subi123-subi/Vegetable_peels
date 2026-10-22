@@ -108,7 +108,11 @@ def get_vegetable(
     if id_or_slug.isdigit():
         veg = query.filter(Vegetable.id == int(id_or_slug)).first()
     else:
-        veg = query.filter(Vegetable.slug == id_or_slug.strip().lower()).first()
+        req_slug = id_or_slug.strip().lower()
+        if req_slug in ("banana", "banana-peel", "banana_peel", "raw-banana", "raw-banana-plantain", "plantain"):
+            veg = query.filter(Vegetable.slug.in_(["banana", "green-plantain"])).first()
+        else:
+            veg = query.filter(Vegetable.slug == req_slug).first()
 
     if not veg:
         raise HTTPException(

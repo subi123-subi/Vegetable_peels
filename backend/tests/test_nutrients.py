@@ -131,4 +131,17 @@ def test_create_nutrient_and_measurement():
     }
     meas_res = client.post("/api/v1/nutrients/measurements", json=meas_payload)
     assert meas_res.status_code == 201
-    assert "measurement_id" in meas_res.json()
+    meas_id = meas_res.json()["measurement_id"]
+
+    # Clean up created test data so it doesn't pollute the database
+    from app.db.session import SessionLocal
+    from app.models.nutrient import Nutrient, NutrientMeasurement
+
+    db = SessionLocal()
+    try:
+        db.query(NutrientMeasurement).filter(NutrientMeasurement.id == meas_id).delete()
+        db.query(Nutrient).filter(Nutrient.id == created_id).delete()
+        db.commit()
+    finally:
+        db.close()
+

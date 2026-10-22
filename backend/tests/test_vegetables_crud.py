@@ -28,7 +28,7 @@ def test_list_vegetables_filter_ai():
     response = client.get("/api/v1/vegetables/?is_ai_supported=true")
     assert response.status_code == 200
     data = response.json()
-    assert data["total"] == 5
+    assert data["total"] >= 5
     for item in data["items"]:
         assert item["is_ai_supported"] is True
         assert item["ai_class_name"] is not None

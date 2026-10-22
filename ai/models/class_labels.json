@@ -22,6 +22,24 @@
   "classes": [
     {
       "index": 0,
+      "key": "apple_peel",
+      "slug": "apple",
+      "displayNameEn": "Apple Peel",
+      "displayNameTa": "ஆப்பிள் தோல்",
+      "scientificName": "Malus domestica",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 1,
+      "key": "banana_peel",
+      "slug": "green-plantain",
+      "displayNameEn": "Banana / Plantain Peel",
+      "displayNameTa": "வாழைக்காய் / வாழைப்பழத் தோல்",
+      "scientificName": "Musa paradisiaca",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 2,
       "key": "beetroot_peel",
       "slug": "beetroot",
       "displayNameEn": "Beetroot Peel",
@@ -30,7 +48,25 @@
       "isSupportedPeel": true
     },
     {
-      "index": 1,
+      "index": 3,
+      "key": "bitter_gourd_peel",
+      "slug": "bitter-gourd",
+      "displayNameEn": "Bitter Gourd Peel",
+      "displayNameTa": "பாகற்காய் தோல்",
+      "scientificName": "Momordica charantia",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 4,
+      "key": "bottle_gourd_peel",
+      "slug": "bottle-gourd",
+      "displayNameEn": "Bottle Gourd Peel",
+      "displayNameTa": "சுரைக்காய் தோல்",
+      "scientificName": "Lagenaria siceraria",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 5,
       "key": "carrot_peel",
       "slug": "carrot",
       "displayNameEn": "Carrot Peel",
@@ -39,7 +75,16 @@
       "isSupportedPeel": true
     },
     {
-      "index": 2,
+      "index": 6,
+      "key": "citrus_peel",
+      "slug": "orange",
+      "displayNameEn": "Citrus / Orange Peel",
+      "displayNameTa": "ஆரஞ்சு / சிட்ரஸ் தோல்",
+      "scientificName": "Citrus sinensis",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 7,
       "key": "cucumber_peel",
       "slug": "cucumber",
       "displayNameEn": "Cucumber Peel",
@@ -48,7 +93,34 @@
       "isSupportedPeel": true
     },
     {
-      "index": 3,
+      "index": 8,
+      "key": "garlic_peel",
+      "slug": "garlic",
+      "displayNameEn": "Garlic Husk / Peel",
+      "displayNameTa": "பூண்டுத் தோல்",
+      "scientificName": "Allium sativum",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 9,
+      "key": "ginger_peel",
+      "slug": "ginger",
+      "displayNameEn": "Ginger Peel",
+      "displayNameTa": "இஞ்சித் தோல்",
+      "scientificName": "Zingiber officinale",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 10,
+      "key": "onion_peel",
+      "slug": "onion",
+      "displayNameEn": "Onion Skin / Peel",
+      "displayNameTa": "வெங்காயத் தோல்",
+      "scientificName": "Allium cepa",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 11,
       "key": "potato_peel",
       "slug": "potato",
       "displayNameEn": "Potato Peel",
@@ -57,7 +129,7 @@
       "isSupportedPeel": true
     },
     {
-      "index": 4,
+      "index": 12,
       "key": "pumpkin_peel",
       "slug": "pumpkin",
       "displayNameEn": "Pumpkin Peel",
@@ -66,7 +138,43 @@
       "isSupportedPeel": true
     },
     {
-      "index": 5,
+      "index": 13,
+      "key": "radish_peel",
+      "slug": "radish",
+      "displayNameEn": "Radish Peel",
+      "displayNameTa": "முள்ளங்கித் தோல்",
+      "scientificName": "Raphanus sativus",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 14,
+      "key": "ridge_gourd_peel",
+      "slug": "ridge-gourd",
+      "displayNameEn": "Ridge Gourd Peel",
+      "displayNameTa": "பீர்க்கங்காய் தோல்",
+      "scientificName": "Luffa acutangula",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 15,
+      "key": "sweet_potato_peel",
+      "slug": "sweet-potato",
+      "displayNameEn": "Sweet Potato Peel",
+      "displayNameTa": "சர்க்கரைவள்ளி கிழங்கு தோல்",
+      "scientificName": "Ipomoea batatas",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 16,
+      "key": "tomato_skin",
+      "slug": "tomato",
+      "displayNameEn": "Tomato Skin",
+      "displayNameTa": "தக்காளித் தோல்",
+      "scientificName": "Solanum lycopersicum",
+      "isSupportedPeel": true
+    },
+    {
+      "index": 17,
       "key": "unsupported_object",
       "slug": "unsupported",
       "displayNameEn": "Unsupported / Non-peel Object",

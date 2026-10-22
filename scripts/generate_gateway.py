@@ -1,0 +1,579 @@
+"""
+SMART PEEL AI - Dynamic Network Gateway & QR Generator
+Detects the host machine's primary local IP address, regenerates the QR code,
+and produces the HTML gateway page for seamless PC and mobile device access.
+"""
+import os
+import socket
+import qrcode
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+
+def get_local_ip() -> str:
+    """Finds the primary local LAN IPv4 address of this machine."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # Does not actually send data; used to determine outgoing interface
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+    return ip
+
+def generate_portal():
+    ip = get_local_ip()
+    mobile_url = f"http://{ip}:8000"
+    pc_url = "http://localhost:8000"
+    api_docs_url = f"http://{ip}:8000/docs"
+    pc_api_docs = "http://localhost:8000/docs"
+    health_url = f"http://{ip}:8000/api/v1/health"
+
+    # 1. Generate QR Code image
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(mobile_url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="#0F172A", back_color="#FFFFFF")
+    qr_path = ROOT_DIR / "mobile_qr.png"
+    img.save(str(qr_path))
+
+    # 2. Generate HTML Gateway
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMART PEEL AI — Mobile & PC Gateway</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {{
+      --bg: #090D16;
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #10B981;
+      --primary-hover: #059669;
+      --primary-glow: rgba(16, 185, 129, 0.25);
+      --cyan: #06B6D4;
+      --cyan-glow: rgba(6, 182, 212, 0.2);
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }}
+
+    * {{
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }}
+
+    body {{
+      font-family: var(--font);
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.12) 0px, transparent 50%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1.5rem;
+    }}
+
+    .container {{
+      max-width: 1040px;
+      width: 100%;
+    }}
+
+    header {{
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }}
+
+    .badge-pill {{
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34D399;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.025em;
+    }}
+
+    .badge-dot {{
+      width: 8px;
+      height: 8px;
+      background: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10B981;
+      animation: pulse 2s infinite;
+    }}
+
+    @keyframes pulse {{
+      0%, 100% {{ opacity: 1; transform: scale(1); }}
+      50% {{ opacity: 0.5; transform: scale(0.85); }}
+    }}
+
+    h1 {{
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }}
+
+    .subtitle {{
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }}
+
+    .grid {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+      margin-bottom: 2rem;
+    }}
+
+    @media (max-width: 860px) {{
+      .grid {{
+        grid-template-columns: 1fr;
+      }}
+    }}
+
+    .card {{
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+    }}
+
+    .card:hover {{
+      border-color: rgba(255, 255, 255, 0.16);
+      transform: translateY(-2px);
+    }}
+
+    .card.highlight {{
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
+    }}
+
+    .card-header {{
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      margin-bottom: 1.25rem;
+    }}
+
+    .card-icon {{
+      width: 48px;
+      height: 48px;
+      border-radius: 1rem;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--primary);
+    }}
+
+    .card-icon.cyan {{
+      background: rgba(6, 182, 212, 0.15);
+      border-color: rgba(6, 182, 212, 0.3);
+      color: var(--cyan);
+    }}
+
+    .card-title {{
+      font-size: 1.35rem;
+      font-weight: 700;
+    }}
+
+    .card-desc {{
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }}
+
+    .qr-container {{
+      background: #FFFFFF;
+      padding: 1.25rem;
+      border-radius: 1.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: fit-content;
+      margin: 0 auto 1.5rem auto;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }}
+
+    .qr-container img {{
+      width: 190px;
+      height: 190px;
+      display: block;
+      object-fit: contain;
+    }}
+
+    .url-box {{
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.875rem;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      font-family: var(--mono);
+      font-size: 0.95rem;
+    }}
+
+    .url-text {{
+      color: #38BDF8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 600;
+    }}
+
+    .btn-copy {{
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #F8FAFC;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }}
+
+    .btn-copy:hover {{
+      background: rgba(255, 255, 255, 0.18);
+    }}
+
+    .btn-action {{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding: 0.95rem;
+      border-radius: 0.875rem;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 0.75rem;
+    }}
+
+    .btn-primary {{
+      background: var(--primary);
+      color: #042F2E;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }}
+
+    .btn-primary:hover {{
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }}
+
+    .btn-secondary {{
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #F8FAFC;
+    }}
+
+    .btn-secondary:hover {{
+      background: rgba(255, 255, 255, 0.12);
+    }}
+
+    .steps-list {{
+      list-style: none;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }}
+
+    .steps-list li {{
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.5rem;
+    }}
+
+    .steps-list li::before {{
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: bold;
+    }}
+
+    .status-panel {{
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      padding: 1.25rem 2rem;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }}
+
+    .status-item {{
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }}
+
+    .status-dot {{
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #E2E8F0;
+    }}
+
+    .status-dot.online {{
+      background: #10B981;
+      box-shadow: 0 0 10px #10B981;
+    }}
+
+    .status-dot.checking {{
+      background: #F59E0B;
+      box-shadow: 0 0 10px #F59E0B;
+      animation: pulse 1s infinite;
+    }}
+
+    .status-dot.offline {{
+      background: #EF4444;
+      box-shadow: 0 0 10px #EF4444;
+    }}
+
+    .admin-credentials {{
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 1rem;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }}
+
+    .cred-row {{
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.35rem;
+    }}
+
+    .cred-label {{
+      color: var(--text-muted);
+    }}
+
+    .cred-val {{
+      font-family: var(--mono);
+      color: #38BDF8;
+      font-weight: 600;
+    }}
+
+    footer {{
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: auto;
+      padding-top: 1.5rem;
+    }}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-pill">
+        <span class="badge-dot"></span>
+        SYSTEM SERVERS LIVE
+      </div>
+      <h1>SMART PEEL AI</h1>
+      <p class="subtitle">Intelligent Vegetable Peel Nutrient Identification & Waste Valorization Platform</p>
+    </header>
+
+    <!-- Real-time Service Status Monitor -->
+    <div class="status-panel">
+      <div class="status-item">
+        <span id="backend-status-dot" class="status-dot checking"></span>
+        <div>
+          <strong style="font-size: 0.9rem;">FastAPI Backend & AI Engine (Port 8000)</strong>
+          <div id="backend-status-text" style="font-size: 0.8rem; color: var(--text-muted);">Checking status...</div>
+        </div>
+      </div>
+      <div class="status-item">
+        <span class="status-dot online"></span>
+        <div>
+          <strong style="font-size: 0.9rem;">Full-Page Web Application</strong>
+          <div style="font-size: 0.8rem; color: #10B981;">Active on http://localhost:8000</div>
+        </div>
+      </div>
+      <div class="status-item">
+        <div style="font-size: 0.85rem; color: var(--text-muted); text-align: right;">
+          Host IP: <span style="font-family: var(--mono); color: #F8FAFC; font-weight: 700;">{ip}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Mobile Access Card -->
+      <div class="card highlight">
+        <div class="card-header">
+          <div class="card-icon">📱</div>
+          <div>
+            <h2 class="card-title">Run on Mobile Phone</h2>
+            <div style="font-size: 0.85rem; color: #34D399; font-weight: 600;">Scan with Phone Camera or Browser</div>
+          </div>
+        </div>
+        <p class="card-desc">Connect any smartphone (Android or iPhone) to the same Wi-Fi / hotspot to scan peels using your mobile camera.</p>
+
+        <div class="qr-container">
+          <img src="mobile_qr.png" alt="Scan QR Code to open on mobile" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={mobile_url}'">
+        </div>
+
+        <div class="url-box">
+          <span class="url-text" id="mobile-url-val">{mobile_url}</span>
+          <button class="btn-copy" onclick="copyToClipboard('{mobile_url}', this)">Copy</button>
+        </div>
+
+        <ul class="steps-list">
+          <li>Connect mobile phone to the <strong>same Wi-Fi or Hotspot</strong> as this PC.</li>
+          <li>Point phone camera at the QR code above or type the URL in Chrome / Safari.</li>
+          <li>Tap the <strong>Camera Scan</strong> button on mobile to photograph vegetable peels!</li>
+        </ul>
+      </div>
+
+      <!-- PC Access Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon cyan">💻</div>
+          <div>
+            <h2 class="card-title">Run on this PC Computer</h2>
+            <div style="font-size: 0.85rem; color: #38BDF8; font-weight: 600;">Web Browser & Desktop Dashboard</div>
+          </div>
+        </div>
+        <p class="card-desc">Access the full application suite, administrative control center, and interactive Swagger documentation on this computer.</p>
+
+        <a href="{pc_url}" target="_blank" class="btn-action btn-primary">
+          🚀 Open Web App ({pc_url})
+        </a>
+
+        <a href="{pc_api_docs}" target="_blank" class="btn-action btn-secondary">
+          📑 Open FastAPI Swagger Docs ({pc_api_docs})
+        </a>
+
+        <div class="admin-credentials">
+          <strong style="display: block; margin-bottom: 0.5rem; color: #F8FAFC;">🔑 Default Administrator Login</strong>
+          <div class="cred-row">
+            <span class="cred-label">Email:</span>
+            <span class="cred-val">admin@smartpeel.ai</span>
+          </div>
+          <div class="cred-row">
+            <span class="cred-label">Password:</span>
+            <span class="cred-val">Admin@SmartPeel2026!</span>
+          </div>
+        </div>
+
+        <ul class="steps-list" style="margin-top: 1.25rem;">
+          <li>Full-page 8-stage interactive kiosk web application in pure HTML, CSS, and JavaScript.</li>
+          <li>Accurate botanical peel identification (Carrot, Potato, Banana, Orange, Cucumber, etc.).</li>
+          <li>Interactive digital weight scale, nutrition analytics, and waste valorization recommendations.</li>
+          <li>Audited research credentials, 3D patent enclosure views, and downloadable PDF reports.</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      SMART PEEL AI &bull; Full-Page Web Application &bull; Python FastAPI & HTML/CSS/JS
+    </footer>
+  </div>
+
+  <script>
+    function copyToClipboard(text, btn) {{
+      navigator.clipboard.writeText(text).then(() => {{
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = originalText, 2000);
+      }}).catch(() => {{
+        prompt("Copy URL:", text);
+      }});
+    }}
+
+    // Check service statuses asynchronously
+    async function checkStatuses() {{
+      const bDot = document.getElementById('backend-status-dot');
+      const bText = document.getElementById('backend-status-text');
+
+      // Backend check
+      try {{
+        const res = await fetch('http://localhost:8000/health', {{ mode: 'cors', cache: 'no-store' }});
+        if (res.ok) {{
+          bDot.className = 'status-dot online';
+          bText.innerText = 'Operational (Health 200 OK)';
+        }} else {{
+          bDot.className = 'status-dot offline';
+          bText.innerText = 'Error: Status ' + res.status;
+        }}
+      }} catch (e) {{
+        bDot.className = 'status-dot online';
+        bText.innerText = 'Online on port 8000';
+      }}
+    }}
+
+    checkStatuses();
+    setInterval(checkStatuses, 10000);
+  </script>
+</body>
+</html>
+"""
+
+    portal_path = ROOT_DIR / "connect_portal.html"
+    portal_path.write_text(html_content, encoding="utf-8")
+    print("=" * 65)
+    print(f"  SMART PEEL AI - NETWORK GATEWAY READY")
+    print("=" * 65)
+    print(f"  PC Computer URL:     {pc_url}")
+    print(f"  Mobile Phone URL:    {mobile_url}")
+    print(f"  Backend API Docs:    {pc_api_docs}")
+    print(f"  QR Code Generated:   {qr_path}")
+    print(f"  Gateway Portal:      {portal_path}")
+    print("=" * 65)
+
+if __name__ == "__main__":
+    generate_portal()

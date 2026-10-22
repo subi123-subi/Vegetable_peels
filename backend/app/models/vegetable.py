@@ -1,8 +1,13 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base_class import Base, utc_now
+
+if TYPE_CHECKING:
+    from app.models.nutrient import NutrientProfile, PeelYieldRatio
+    from app.models.reuse import ReuseRecommendation
+    from app.models.safety import SafetyRule
 
 
 class PlantPart(Base):

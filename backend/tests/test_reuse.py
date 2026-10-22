@@ -75,3 +75,57 @@ def test_get_cassava_reuse_recommendations_inhibits_food_use():
 def test_get_reuse_recommendations_non_existent_vegetable():
     response = client.get("/api/v1/reuse/recommendations/invalid_peel_name")
     assert response.status_code == 404
+
+
+def test_list_meaningful_creations_all():
+    response = client.get("/api/v1/reuse/creations")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total"] >= 10
+    assert len(data["creations"]) >= 10
+    assert "eco_home" in data["categories"]
+    assert "garden_soil" in data["categories"]
+    assert "arts_crafts" in data["categories"]
+    assert "culinary_gourmet" in data["categories"]
+
+    ids = [c["id"] for c in data["creations"]]
+    assert "bio_enzyme_cleaner" in ids
+    assert "biodegradable_seedling_pots" in ids
+    assert "cold_steeped_peel_tea" in ids
+    assert "beetroot_botanical_watercolors" in ids
+    assert "zero_waste_veggie_bouillon" in ids
+
+
+def test_list_meaningful_creations_filtered_by_category():
+    response = client.get("/api/v1/reuse/creations?category=eco_home")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total"] >= 2
+    for c in data["creations"]:
+        assert c["category"] == "eco_home"
+
+
+def test_list_meaningful_creations_filtered_by_vegetable():
+    response = client.get("/api/v1/reuse/creations?vegetable_slug=beetroot")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total"] >= 1
+    ids = [c["id"] for c in data["creations"]]
+    assert "beetroot_botanical_watercolors" in ids
+
+
+def test_get_meaningful_creation_detail_success():
+    response = client.get("/api/v1/reuse/creations/bio_enzyme_cleaner")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == "bio_enzyme_cleaner"
+    assert "Citrus" in data["title_en"]
+    assert len(data["required_materials_en"]) >= 3
+    assert len(data["step_by_step_instructions_en"]) >= 5
+    assert "safety_and_storage_en" in data
+
+
+def test_get_meaningful_creation_detail_not_found():
+    response = client.get("/api/v1/reuse/creations/unknown_creation_xyz")
+    assert response.status_code == 404
+

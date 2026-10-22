@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Peel Analyzer — Intelligent Botanical Waste Valorization Platform</title>
+  <meta name="description" content="Intelligent Vegetable Peel Nutrient Identification, Deep Neural Vision, Load Cell Weighing, and Waste Valorization System.">
+  <link rel="stylesheet" href="css/style.css?v=7.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍃</text></svg>">
+</head>
+<body>
+
+  <!-- =======================================================================
+       Patent Laboratory Navigation Drawer (Matching User Screenshot)
+       ======================================================================= -->
+  <div class="patent-drawer-overlay" id="patentDrawerOverlay">
+    <aside class="patent-drawer" id="patentDrawer">
+      <div class="patent-drawer-header">
+        <div class="patent-drawer-brand">
+          <span class="p-leaf-icon">🍃</span>
+          <div>
+            <h3>Smart Peel Analyzer</h3>
+            <p>Patent Device & Laboratory Kiosk</p>
+          </div>
+        </div>
+        <button class="drawer-close-btn" id="closeDrawerBtn" title="Close Menu">✕</button>
+      </div>
+
+      <div class="patent-drawer-menu">
+        <button class="patent-menu-item" id="menuHardwareDevice" type="button">
+          <span class="p-menu-icon icon-teal">
+            <!-- Microscope icon matching screenshot -->
+            <svg viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-5v2h-4V3H9v2H5c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4V3m-5 13H7v-2h3m5-2h-3v2h3m0-6h-3v2h3m-5-2H7v2h3z"/></svg>
+          </span>
+          <div class="p-menu-text">
+            <div class="p-menu-title">Hardware Device (Patent Design)</div>
+            <div class="p-menu-subtitle">Optical scale, sensors & 3D enclosure</div>
+          </div>
+        </button>
+
+        <button class="patent-menu-item" id="menuAuthors" type="button">
+          <span class="p-menu-icon icon-green">
+            <!-- Groups / Authors icon matching screenshot -->
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </span>
+          <div class="p-menu-text">
+            <div class="p-menu-title">Authors & Inventors</div>
+            <div class="p-menu-subtitle">6 Inventors & institutional credentials</div>
+          </div>
+        </button>
+
+        <button class="patent-menu-item" id="menuMachineDemo" type="button">
+          <span class="p-menu-icon icon-orange-play">
+            <!-- Orange play circle icon matching screenshot -->
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          </span>
+          <div class="p-menu-text">
+            <div class="p-menu-title">Machine Video Demo</div>
+            <div class="p-menu-subtitle">How the machine detects waste peel</div>
+          </div>
+        </button>
+
+        <div class="patent-menu-divider"></div>
+
+        <button class="patent-menu-item" id="menuAllCategories" type="button">
+          <span class="p-menu-icon icon-emerald">
+            <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+          </span>
+          <div class="p-menu-text">
+            <div class="p-menu-title">Peel Categories (26 Peels)</div>
+            <div class="p-menu-subtitle">Botanical classification catalogue</div>
+          </div>
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- =======================================================================
+       Main Web Application Layout
+       ======================================================================= -->
+  <div class="site-wrapper">
+    <!-- Top System & Neural Status Bar -->
+    <div class="site-topbar">
+      <div class="topbar-inner">
+        <div class="topbar-left">
+          <span class="live-dot"></span>
+          <span class="topbar-title">SMART PEEL ANALYZER</span>
+          <span class="topbar-sep">•</span>
+          <span class="topbar-model">MODEL SPA-2026-X1</span>
+          <span class="topbar-sep">•</span>
+          <span class="topbar-badge">EMBEDDED NEURAL VISION</span>
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-metric">Model Accuracy: <strong>99.8%</strong></span>
+          <span class="topbar-sep">•</span>
+          <span class="topbar-metric">Catalogue: <strong>26 Botanical Peels</strong></span>
+          <span class="topbar-sep">•</span>
+          <span class="topbar-clock" id="topClock">10:55 AM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand" onclick="goToStage(1)" style="cursor:pointer;" title="Smart Peel Analyzer Home">
+          <button class="drawer-toggle-btn" id="drawerToggleBtn" type="button" title="Open Patent Navigation Menu" onclick="event.stopPropagation();">
+            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+          </button>
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z"/></svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Smart Peel Analyzer</span>
+            <span class="brand-desc">Botanical Biomass & Valorization AI System</span>
+          </div>
+        </div>
+
+        <nav class="header-nav">
+          <button class="nav-tab active" data-nav-stage="1" onclick="goToStage(1)">Dashboard</button>
+          <button class="nav-tab" data-nav-stage="2" onclick="goToStage(2)">Chamber Scan</button>
+          <button class="nav-tab" onclick="openModal('catalogueModal')">Peel Catalogue</button>
+          <button class="nav-tab" data-nav-stage="6" onclick="goToStage(6)">Nutrient Lab</button>
+          <button class="nav-tab" onclick="openModal('hardwareModal')">Patent Hardware</button>
+          <button class="nav-tab" onclick="openModal('authorsModal')">Authors</button>
+          <a class="nav-tab api-link" href="/docs" target="_blank">Swagger API ↗</a>
+        </nav>
+
+        <div class="appbar-actions">
+          <div class="digital-clock" id="digitalClock">10:55 AM</div>
+          <button class="icon-btn" id="homeBtn" title="Return to Home Screen" onclick="goToStage(1)">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          </button>
+          <button class="icon-btn" id="fullscreenToggleBtn" title="Toggle Fullscreen Full Page Mode">
+            <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+          </button>
+          <button class="icon-btn" id="settingsIconBtn" title="Device Settings & Calibration">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          </button>
+          <button class="btn-scan-header" onclick="goToStage(2)">
+            <span>📷</span> Place Sample
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stepper Navigation -->
+    <div class="stepper-container">
+
+        <!-- ===================================================================
+             Stages Stepper Bar (Direct Quick Navigation across 8 Screens)
+             =================================================================== -->
+        <nav class="stages-stepper" aria-label="Workflow Stages">
+          <button class="stage-step active" data-step="1"><span class="step-num">1</span> Home</button>
+          <span class="step-arrow">›</span>
+          <button class="stage-step" data-step="2"><span class="step-num">2</span> Place Sample</button>
+          <span class="step-arrow">›</span>
+          <button class="stage-step" data-step="3"><span class="step-num">3</span> Image Capturing</button>
+          <span class="step-arrow">›</span>
+          <button class="stage-step" data-step="4"><span class="step-num">4</span> AI Identification</button>
+          <span class="step-arrow">›</span>
+          <button class="stage-step" data-step="5"><span class="step-num">5</span> Weight Measurement</button>
+          <span class="step-arrow">›</span>
+          <button class="stage-step" data-step="6"><span class="step-num">6</span> Nutrient Results</button>
+          <span class="step-arrow">›</span>
+          <button class="stage-step" data-step="7"><span class="step-num">7</span> Safety & Reuse</button>
+          <span class="step-arrow">›</span>
+          <button class="stage-step" data-step="8"><span class="step-num">8</span> Final Report</button>
+        </nav>
+
+        <!-- ===================================================================
+             Screens Viewport (Dynamic 8 Pages)
+             =================================================================== -->
+        <main class="screens-viewport">
+
+          <!-- ---------------------------------------------------------------
+               SCREEN 1: HOME SCREEN
+               --------------------------------------------------------------- -->
+          <section class="kiosk-screen-page active-page" id="screenStage1">
+            <div class="home-hero-card">
+              <div class="home-hero-text">
+                <div class="badge-pill">
+                  <span>🍃</span> Botanical Biomass & Valorization AI System • Patent SPA-2026-X1
+                </div>
+                <h1>Smart Peel Analyzer</h1>
+                <p>Advanced deep neural vision and precision load-cell platform to identify vegetable & fruit waste peels, quantify nutritional profiles, and unlock circular bio-economy valorization.</p>
+                <div class="hero-actions-row">
+                  <button class="hero-btn-primary" onclick="goToStage(2)">
+                    <span>📷</span> Launch Chamber Scan
+                  </button>
+                  <button class="hero-btn-secondary" onclick="openModal('catalogueModal')">
+                    <span>📋</span> 26 Peel Catalogue
+                  </button>
+                  <button class="hero-btn-secondary" onclick="openModal('hardwareModal')">
+                    <span>🔬</span> Patent 3D Specs
+                  </button>
+                </div>
+              </div>
+              <div class="hero-img-wrap">
+                <img class="home-hero-img" src="images/vegetables/carrot.jpg" alt="Fresh Vegetable Peels">
+                <div class="hero-img-overlay-badge">
+                  <span class="pulse-ring"></span>
+                  <span>12MP Multi-Spectral Camera Live</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Platform Intelligence & Patent Telemetry Bar -->
+            <div class="platform-stats-grid">
+              <div class="stat-card">
+                <div class="stat-card-header">
+                  <span class="stat-icon-wrap" style="background:#ecfdf5; color:#059669;">🌿</span>
+                  <span class="stat-trend">Master DB</span>
+                </div>
+                <div class="stat-num">26 Peels</div>
+                <div class="stat-label">Botanical Waste Categories</div>
+                <div class="stat-sub">Citrus, Roots, Tubers, Gourds & Fruits</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-card-header">
+                  <span class="stat-icon-wrap" style="background:#eff6ff; color:#2563eb;">🧠</span>
+                  <span class="stat-trend" style="color:#2563eb; background:#eff6ff;">MobileNetV3</span>
+                </div>
+                <div class="stat-num">99.8%</div>
+                <div class="stat-label">Deep Neural Vision Accuracy</div>
+                <div class="stat-sub">Multi-spectral optical spectral analysis</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-card-header">
+                  <span class="stat-icon-wrap" style="background:#fef3c7; color:#d97706;">⚖️</span>
+                  <span class="stat-trend" style="color:#d97706; background:#fef3c7;">±0.1g Scale</span>
+                </div>
+                <div class="stat-num">0.1g - 500g</div>
+                <div class="stat-label">Strain-Gauge Precision Scale</div>
+                <div class="stat-sub">Automated tare & digital load cell</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-card-header">
+                  <span class="stat-icon-wrap" style="background:#f3e8ff; color:#7c3aed;">♻️</span>
+                  <span class="stat-trend" style="color:#7c3aed; background:#f3e8ff;">Circular</span>
+                </div>
+                <div class="stat-num">100% Zero-Waste</div>
+                <div class="stat-label">Biomass Valorization Paths</div>
+                <div class="stat-sub">Bio-extracts, compost, feed & enzymes</div>
+              </div>
+            </div>
+
+            <!-- 4 Large Interactive Touch Tiles -->
+            <div class="home-tiles-grid">
+              <div class="touch-tile tile-scan" onclick="goToStage(2)">
+                <div class="tile-icon">
+                  <svg viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                </div>
+                <div class="tile-title">Scan Peel</div>
+                <div class="tile-desc">Place peel in chamber</div>
+              </div>
+
+              <div class="touch-tile tile-history" id="tileHistory">
+                <div class="tile-icon">
+                  <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                </div>
+                <div class="tile-title">Scan History</div>
+                <div class="tile-desc">View past reports & logs</div>
+              </div>
+
+              <div class="touch-tile tile-nutrients" id="tileNutrients">
+                <div class="tile-icon">
+                  <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                </div>
+                <div class="tile-title">Nutrient Information</div>
+                <div class="tile-desc">26 Peel Categories</div>
+              </div>
+
+              <div class="touch-tile tile-settings" id="tileSettings">
+                <div class="tile-icon">
+                  <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                </div>
+                <div class="tile-title">Settings</div>
+                <div class="tile-desc">Illumination & Calibration</div>
+              </div>
+            </div>
+
+            <!-- Patent Laboratory Quick Links Row (Matching Screenshot Items) -->
+            <div class="patent-quick-bar">
+              <div class="patent-quick-card" id="quickCardHardware">
+                <span class="pq-icon icon-teal">
+                  <svg viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-5v2h-4V3H9v2H5c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4V3m-5 13H7v-2h3m5-2h-3v2h3m0-6h-3v2h3m-5-2H7v2h3z"/></svg>
+                </span>
+                <div class="pq-content">
+                  <span class="pq-title">Hardware Device (Patent Design)</span>
+                  <span class="pq-sub">Optical scale & 3D sensor enclosure</span>
+                </div>
+                <span class="pq-arrow">›</span>
+              </div>
+
+              <div class="patent-quick-card" id="quickCardAuthors">
+                <span class="pq-icon icon-green">
+                  <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                </span>
+                <div class="pq-content">
+                  <span class="pq-title">Authors & Inventors</span>
+                  <span class="pq-sub">Research team & credentials</span>
+                </div>
+                <span class="pq-arrow">›</span>
+              </div>
+
+              <div class="patent-quick-card" id="quickCardDemo">
+                <span class="pq-icon icon-orange-play">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                </span>
+                <div class="pq-content">
+                  <span class="pq-title">Machine Video Demo</span>
+                  <span class="pq-sub">How the machine detects waste peel</span>
+                </div>
+                <span class="pq-arrow">›</span>
+              </div>
+
+              <div class="patent-quick-card" id="quickCardCategories">
+                <span class="pq-icon icon-emerald">
+                  <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+                </span>
+                <div class="pq-content">
+                  <span class="pq-title">Peel Categories (26 Peels)</span>
+                  <span class="pq-sub">All botanical categories catalogue</span>
+                </div>
+                <span class="pq-arrow">›</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------------------------------------------------------------
+               SCREEN 2: PLACE SAMPLE
+               --------------------------------------------------------------- -->
+          <section class="kiosk-screen-page" id="screenStage2">
+            <div class="chamber-place-container">
+              <div class="chamber-hardware-box">
+                <div class="chamber-tray-view">
+                  <div class="chamber-led-strip"></div>
+                  <img id="chamberTrayImg" class="chamber-tray-img" src="images/vegetables/carrot.jpg" alt="Sample Tray View" onerror="this.onerror=null; this.src='images/vegetables/carrot.jpg';">
+                  <div class="chamber-lid-banner" id="chamberLidBanner">
+                    <span class="lid-indicator-dot"></span> Chamber Lid: Closed & Locked
+                  </div>
+                </div>
+
+                <div class="chamber-instructions">
+                  Place the vegetable peel in the sample tray and close the lid.
+                </div>
+
+                <!-- Category Filter Tabs in Stage 2 -->
+                <div class="category-filter-bar">
+                  <button class="cat-filter-btn active" data-cat="all" type="button">All Peels</button>
+                  <button class="cat-filter-btn" data-cat="fruit" type="button">🍋 Fruits & Citrus</button>
+                  <button class="cat-filter-btn" data-cat="root" type="button">🥕 Roots</button>
+                  <button class="cat-filter-btn" data-cat="tuber" type="button">🥔 Tubers & Alliums</button>
+                  <button class="cat-filter-btn" data-cat="gourd" type="button">🥒 Gourds</button>
+                  <button class="cat-filter-btn" id="browseAllCategoriesStage2Btn" type="button" style="background:#0284c7; color:#fff; border-color:#0284c7; margin-left:auto;">
+                    🌿 Browse All 26 Categories
+                  </button>
+                </div>
+
+                <!-- Quick Sample Selector Chips & Actions -->
+                <div class="sample-picker-bar">
+                  <div class="sample-pill" data-slug="orange" data-cat="fruit">
+                    <img src="images/vegetables/orange.jpg" alt="Orange"> Citrus / Orange
+                  </div>
+                  <div class="sample-pill active" data-slug="carrot" data-cat="root">
+                    <img src="images/vegetables/carrot.jpg" alt="Carrot"> Carrot Peel
+                  </div>
+                  <div class="sample-pill" data-slug="potato" data-cat="tuber">
+                    <img src="images/vegetables/potato.jpg" alt="Potato"> Potato Peel
+                  </div>
+                  <div class="sample-pill" data-slug="beetroot" data-cat="root">
+                    <img src="images/vegetables/beetroot.jpg" alt="Beetroot"> Beetroot
+                  </div>
+                  <div class="sample-pill" data-slug="cucumber" data-cat="gourd">
+                    <img src="images/vegetables/cucumber.jpg" alt="Cucumber"> Cucumber
+                  </div>
+                  <div class="sample-pill" data-slug="pumpkin" data-cat="gourd">
+                    <img src="images/vegetables/pumpkin.jpg" alt="Pumpkin"> Pumpkin
+                  </div>
+                  <div class="sample-pill" data-slug="banana" data-cat="fruit">
+                    <img src="images/vegetables/banana.jpg" alt="Banana"> Banana Peel
+                  </div>
+                  <div class="sample-pill" data-slug="apple" data-cat="fruit">
+                    <img src="images/vegetables/apple.jpg" alt="Apple"> Apple Peel
+                  </div>
+                  <div class="sample-pill" data-slug="onion" data-cat="tuber">
+                    <img src="images/vegetables/onion.jpg" alt="Onion"> Onion Skin
+                  </div>
+                  <div class="sample-pill" data-slug="garlic" data-cat="tuber">
+                    <img src="images/vegetables/garlic.jpg" alt="Garlic"> Garlic Husk
+                  </div>
+                  <div class="sample-pill" data-slug="mixed-peels" data-cat="all">
+                    <img src="images/vegetables/mixed_peel_waste.jpg" alt="Mixed Peels"> Mixed Peels
+                  </div>
+
+                  <!-- Custom Upload Pill matching exact user screenshot -->
+                  <label class="custom-upload-pill" id="customUploadLabel" title="Upload your own waste peel photo">
+                    <span class="upload-icon">📁</span>
+                    <span class="upload-text">Custom Upload</span>
+                    <input type="file" id="peelFileInput" accept="image/*" style="display:none;">
+                  </label>
+
+                  <!-- Camera Capture Pill -->
+                  <button class="sample-pill camera-pill" id="cameraCaptureBtn" type="button" style="cursor:pointer; background:#ecfdf5; border-color:#10b981; color:#065f46;" title="Capture photo using webcam or camera">
+                    📷 Camera Capture
+                  </button>
+                  <button class="preset-btn" id="lidToggleBtn" style="margin-left:8px;">Toggle Lid</button>
+                </div>
+
+                <button class="btn-big-scan" id="startScanBtn">
+                  <span>▶</span> Start Scan
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------------------------------------------------------------
+               SCREEN 3: IMAGE CAPTURING
+               --------------------------------------------------------------- -->
+          <section class="kiosk-screen-page" id="screenStage3">
+            <div class="capturing-layout">
+              <div class="scanner-viewfinder-box">
+                <img id="scannerPeelImg" class="scanner-peel-img" src="images/vegetables/carrot.jpg" alt="Scanning Peel">
+                <!-- Laser Reticle and Sweeping Scan Line -->
+                <div class="scanner-reticle">
+                  <div class="reticle-corner tl"></div>
+                  <div class="reticle-corner tr"></div>
+                  <div class="reticle-corner bl"></div>
+                  <div class="reticle-corner br"></div>
+                </div>
+                <div class="laser-scanner-beam"></div>
+              </div>
+
+              <div class="scanner-status-panel">
+                <div class="camera-pulsing-icon">
+                  <svg viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                </div>
+                <h2>Capturing Image...</h2>
+                <p>Please wait while the device captures and analyses the sample.</p>
+                <div class="scan-progress-bar-wrap">
+                  <div class="scan-progress-bar" id="scanProgressBar"></div>
+                </div>
+                <div class="scan-progress-text" id="scanProgressText">0%</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------------------------------------------------------------
+               SCREEN 4: AI IDENTIFICATION
+               --------------------------------------------------------------- -->
+          <section class="kiosk-screen-page" id="screenStage4">
+            <div class="ai-id-card">
+              <div class="ai-id-header">
+                <img id="aiIdThumb" class="ai-id-thumb" src="images/vegetables/carrot.jpg" alt="Identified Peel">
+                <div class="ai-id-info">
+                  <div class="ai-id-name-box">
+                    <div class="label">AI Prediction</div>
+                    <h2 id="aiIdName">Carrot Peel</h2>
+                    <div class="scientific-name" id="aiIdScientific">Daucus carota • Root Vegetable</div>
+                  </div>
+                  <div class="confidence-pill">
+                    <div class="conf-lbl">Confidence</div>
+                    <div class="conf-num" id="aiIdConfidenceVal">96%</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Candidates Carousel Row -->
+              <div class="candidates-row-section">
+                <div class="candidates-title">Alternative Options / Quick Correction:</div>
+                <div class="candidates-grid" id="candidatesGrid">
+                  <!-- Dynamically populated candidate cards -->
+                </div>
+              </div>
+
+              <!-- Confirmation Prompt -->
+              <div class="ai-confirmation-bar">
+                <div class="prompt-text">Is this correct?</div>
+                <div class="ai-confirm-buttons">
+                  <button class="btn-confirm-yes" onclick="goToStage(5)">
+                    <span>✔</span> Yes
+                  </button>
+                  <button class="btn-confirm-no" onclick="openModal('catalogueModal')">
+                    <span>✖</span> No
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------------------------------------------------------------
+               SCREEN 5: WEIGHT MEASUREMENT
+               --------------------------------------------------------------- -->
+          <section class="kiosk-screen-page" id="screenStage5">
+            <div class="weight-screen-layout">
+              <div class="weight-chamber-box">
+                <img id="weightChamberImg" src="images/vegetables/carrot.jpg" alt="Weighing Chamber">
+                <div class="scale-platform-badge">
+                  <span>⚖ Strain-Gauge Load Cell Sensor</span>
+                  <span>Accuracy: ±0.1 g</span>
+                </div>
+              </div>
+
+              <div class="weight-display-card">
+                <div class="weight-scale-icon-box">
+                  <svg viewBox="0 0 24 24"><path d="M12 3c-.55 0-1 .45-1 1v1.08C7.61 5.56 5 8.47 5 12v1H3v2h2v5c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-5h2v-2h-2v-1c0-3.53-2.61-6.44-6-6.92V4c0-.55-.45-1-1-1zm-5 9c0-2.76 2.24-5 5-5s5 2.24 5 5v1H7v-1z"/></svg>
+                </div>
+                <div class="weight-readout-lbl">Sample Weight</div>
+                <div class="weight-digital-readout" id="weightDigitalReadout">50.0 g</div>
+
+                <div class="weight-recorded-badge">
+                  <span>✔</span> Weight recorded successfully.
+                </div>
+
+                <!-- Weight Adjustment Slider & Presets -->
+                <div class="weight-slider-wrap">
+                  <label>
+                    <span>Adjust Sample Weight (Simulate Load Cell)</span>
+                    <button class="preset-btn" id="tareScaleBtn">Tare (0.0g)</button>
+                  </label>
+                  <input type="range" class="weight-slider" id="weightSlider" min="5" max="250" step="0.5" value="50">
+                  <div class="weight-presets-row">
+                    <button class="preset-btn" data-weight="25.0">25 g</button>
+                    <button class="preset-btn" data-weight="50.0">50 g</button>
+                    <button class="preset-btn" data-weight="75.0">75 g</button>
+                    <button class="preset-btn" data-weight="100.0">100 g</button>
+                    <button class="preset-btn" data-weight="150.0">150 g</button>
+                  </div>
+                </div>
+
+                <div class="weight-info-notice">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                  <span>The weight is used to estimate nutrient values based on reference data.</span>
+                </div>
+
+                <button class="btn-proceed-nutrients" onclick="goToStage(6)">
+                  Proceed to Nutrient Analysis →
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------------------------------------------------------------
+               SCREEN 6: NUTRIENT RESULTS
+               --------------------------------------------------------------- -->
+          <section class="kiosk-screen-page" id="screenStage6">
+            <div class="peel-summary-banner">
+              <div class="peel-summary-left">
+                <img class="peel-summary-thumb dyn-peel-thumb" src="images/vegetables/carrot.jpg" alt="Peel">
+                <div class="peel-summary-meta">
+                  <h3 class="dyn-peel-name">Carrot Peel</h3>
+                  <p>Sample Weight: <span class="dyn-peel-weight">50.0 g</span></p>
+                </div>
+              </div>
+              <div class="confidence-pill">
+                <div class="conf-lbl">Confidence</div>
+                <div class="conf-num dyn-peel-conf">96%</div>
+              </div>
+            </div>
+
+            <!-- 3 Tabs matching Screenshot 6 -->
+            <div class="analysis-tabs-bar">
+              <button class="analysis-tab-btn active" data-tab="nutrients">Nutrients</button>
+              <button class="analysis-tab-btn tab-safety" data-tab="safety">Safety Information</button>
+              <button class="analysis-tab-btn tab-reuse" data-tab="reuse">Reuse Suggestions</button>
+            </div>
+
+            <!-- Nutrients Table Card -->
+            <div class="nutrient-table-card">
+              <table class="nutrient-table">
+                <thead>
+                  <tr>
+                    <th>Nutrient / Compound</th>
+                    <th>Estimated Amount (in <span class="dyn-peel-weight">50.0 g</span>)</th>
+                    <th>Source / Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="nutrientTableBody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-footnote">
+              * Values are estimates based on published research and may vary.
+            </div>
+
+            <div class="step-nav-bar">
+              <button class="btn-nav-prev" onclick="goToStage(5)">← Previous (Weight)</button>
+              <button class="btn-nav-next" onclick="goToStage(7)">
+                Safety & Reuse Recommendations →
+              </button>
+            </div>
+          </section>
+
+          <!-- ---------------------------------------------------------------
+               SCREEN 7: SAFETY & REUSE RECOMMENDATIONS
+               --------------------------------------------------------------- -->
+          <section class="kiosk-screen-page" id="screenStage7">
+            <div class="peel-summary-banner">
+              <div class="peel-summary-left">
+                <img class="peel-summary-thumb dyn-peel-thumb" src="images/vegetables/carrot.jpg" alt="Peel">
+                <div class="peel-summary-meta">
+                  <h3 class="dyn-peel-name">Carrot Peel</h3>
+                  <p>Sample Weight: <span class="dyn-peel-weight">50.0 g</span></p>
+                </div>
+              </div>
+              <div class="confidence-pill">
+                <div class="conf-lbl">Confidence</div>
+                <div class="conf-num dyn-peel-conf">96%</div>
+              </div>
+            </div>
+
+            <!-- 3 Tabs matching Screenshot 7 -->
+            <div class="analysis-tabs-bar">
+              <button class="analysis-tab-btn" data-tab="nutrients">Nutrients</button>
+              <button class="analysis-tab-btn active tab-safety" data-tab="safety">Safety Information</button>
+              <button class="analysis-tab-btn tab-reuse" data-tab="reuse">Reuse Suggestions</button>
+            </div>
+
+            <!-- Safety & Reuse Boxes Side by Side -->
+            <div class="safety-reuse-grid">
+              <div class="safety-box">
+                <div class="safety-box-title">
+                  <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                  <span>Safety Information</span>
+                </div>
+                <ul class="safety-list" id="safetyUlList">
+                  <!-- Dynamically populated safety warnings -->
+                </ul>
+              </div>
+
+              <div class="reuse-box">
+                <div class="reuse-box-title">
+                  <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z"/></svg>
+                  <span>Suggested Reuse Options</span>
+                </div>
+                <ul class="reuse-list" id="reuseUlList">
+                  <!-- Dynamically populated reuse options -->
+                </ul>
+              </div>
+            </div>
+
+            <div class="step-nav-bar">
+              <button class="btn-nav-prev" onclick="goToStage(6)">← Previous (Nutrients)</button>
+              <button class="btn-nav-next" onclick="goToStage(8)">
+                Generate Final Report →
+              </button>
+            </div>
+          </section>
+
+          <!-- ---------------------------------------------------------------
+               SCREEN 8: PATENT HARDWARE ANALYSIS DASHBOARD (MATCHING IMAGE 1)
+               --------------------------------------------------------------- -->
+          <section class="kiosk-screen-page" id="screenStage8">
+            <div class="patent-dashboard-wrapper">
+              
+              <!-- OFFICIAL PRINT/PDF CERTIFICATE HEADER (Visible ONLY during print/PDF export) -->
+              <div class="print-cert-header">
+                <div class="pch-left">
+                  <div class="pch-title">SMART PEEL ANALYZER — OFFICIAL LABORATORY CERTIFICATE</div>
+                  <div class="pch-sub">Patent Application No. 202441089214 A • Embedded Neural Vision & Optical Scale Botanical Valorization</div>
+                </div>
+                <div class="pch-right">
+                  <div class="pch-meta">CERTIFICATE ID: <strong id="pchReportId">SPA-2026-X1</strong></div>
+                  <div class="pch-meta">STATUS: <span class="pch-auth-tag">CERTIFIED ANALYSIS</span></div>
+                </div>
+              </div>
+
+              <!-- TOP BANNER -->
+              <div class="p-dash-topbar">
+                <div class="p-dash-ident-group">
+                  <div class="p-dash-ident-lbl">PEEL IDENTIFIED:</div>
+                  <div class="p-dash-ident-title">
+                    <span class="p-dash-check-badge">✔</span>
+                    <span id="pDashPeelName">CITRUS / ORANGE PEEL</span>
+                  </div>
+                </div>
+                <div class="p-dash-metrics-group">
+                  <div class="p-dash-metric-pill pill-acc">
+                    <span class="p-dash-pill-icon">✔</span>
+                    <div class="p-dash-pill-text">
+                      <span class="p-dash-pill-lbl">ACCURACY:</span>
+                      <span class="p-dash-pill-val" id="pDashAccuracy">99.8%</span>
+                    </div>
+                  </div>
+                  <div class="p-dash-metric-pill pill-wt">
+                    <span class="p-dash-pill-icon">⚖</span>
+                    <div class="p-dash-pill-text">
+                      <span class="p-dash-pill-lbl">WEIGHT:</span>
+                      <span class="p-dash-pill-val" id="pDashWeight">48.5g</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MAIN DASHBOARD BODY (Sidebar rail + Center/Right panels) -->
+              <div class="p-dash-body">
+                <!-- Left Nav Icon Rail matching hardware monitor -->
+                <aside class="p-dash-nav-rail">
+                  <button class="p-dash-rail-btn active" id="railBioBtn" title="Biochemical Profile">
+                    <svg viewBox="0 0 24 24"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v8.99L21.95 12c-.44-5.26-4.69-9.5-9.95-10zm0 11.01V22c5.26-.5 9.51-4.74 9.95-10L13 13.01z"/></svg>
+                  </button>
+                  <button class="p-dash-rail-btn" id="railSpecBtn" title="Spectrophotometry Absorbance">
+                    <svg viewBox="0 0 24 24"><path d="M4 19h16v2H2V3h2v16zm4-7l3.5 4.5 2.5-3 4 5h-10l-2-2.5L8 12z"/></svg>
+                  </button>
+                  <button class="p-dash-rail-btn" id="railHistBtn" title="Scan Timestamp & History">
+                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                  </button>
+                  <button class="p-dash-rail-btn" id="railLabBtn" title="Nutrient Assays">
+                    <svg viewBox="0 0 24 24"><path d="M19 19c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2 0-.32.08-.63.22-.9L9 11.08V5h-.5C7.67 5 7 4.33 7 3.5S7.67 2 8.5 2h7c.83 0 1.5.67 1.5 1.5S16.33 5 15.5 5H15v6.08l3.78 7.02c.14.27.22.58.22.9z"/></svg>
+                  </button>
+                  <div style="flex:1;"></div>
+                  <button class="p-dash-rail-btn" id="pDashSettingsRailBtn" title="Kiosk Settings">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                  </button>
+                </aside>
+
+                <!-- Grid with Left Card (Biochemical) & Right Card (Spectroscopy) -->
+                <div class="p-dash-main-grid">
+                  
+                  <!-- Left Main Chart: BIOCHEMICAL PROFILE -->
+                  <div class="p-dash-card p-dash-bio-card">
+                    <div class="p-dash-card-header">
+                      <span class="p-dash-card-title" id="pDashBioTitle">BIOCHEMICAL PROFILE: ORANGE PEEL</span>
+                      <div class="p-dash-legend" id="pDashBioLegend">
+                        <span class="leg-item leg-cyan"><span class="leg-line"></span><span id="legLbl1">Pectin</span></span>
+                        <span class="leg-item leg-yellow"><span class="leg-line"></span><span id="legLbl2">Limonene</span></span>
+                        <span class="leg-item leg-orange"><span class="leg-line"></span><span id="legLbl3">Vitamin C</span></span>
+                        <span class="leg-item leg-purple"><span class="leg-line"></span><span id="legLbl4">Flavonoids</span></span>
+                      </div>
+                    </div>
+                    <div class="p-dash-chart-container">
+                      <canvas id="bioProfileCanvas" width="480" height="200"></canvas>
+                    </div>
+                  </div>
+
+                  <!-- Right Main Chart: ABSORBANCE SPECTRUM (Rainbow Gradient) -->
+                  <div class="p-dash-card p-dash-spec-card">
+                    <div class="p-dash-spec-header">
+                      <span class="p-dash-spec-meta" id="pDashSampleMeta">SAMPLE: GP-104-B  DATE: 26 OCT 2023  TIME: 14:32:01</span>
+                    </div>
+                    <div class="p-dash-chart-container spec-chart-container">
+                      <canvas id="absorbanceCanvas" width="380" height="200"></canvas>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Left Card: PECTIN / KEY COMPONENT CONTENT -->
+                  <div class="p-dash-card p-dash-mini-card p-dash-pectin-card">
+                    <div class="p-dash-mini-lbl" id="pDashKeyFractionLbl">PECTIN CONTENT: <span id="pDashKeyFractionVal">3.12%</span></div>
+                    <div class="p-dash-spectrum-bars-row">
+                      <div class="spectrum-bars-y-axis">10<br>0</div>
+                      <div class="p-dash-spectrum-bars" id="pDashSpectrumBars">
+                        <div class="bar-col b1" style="height:35%;"></div>
+                        <div class="bar-col b2" style="height:55%;"></div>
+                        <div class="bar-col b3" style="height:85%;"></div>
+                        <div class="bar-col b4" style="height:60%;"></div>
+                        <div class="bar-col b5" style="height:95%;"></div>
+                        <div class="bar-col b6" style="height:70%;"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Middle Card: NUTRIENTS -->
+                  <div class="p-dash-card p-dash-mini-card p-dash-nutr-card">
+                    <div class="p-dash-nutr-lbl">NUTRIENTS:</div>
+                    <div class="p-dash-nutr-values" id="pDashNutrSummary">
+                      <div class="p-nutr-row row-lime">Vit. C: <strong id="pDashVitC">8.4 mg</strong></div>
+                      <div class="p-nutr-row row-cyan">Flavonoids: <strong id="pDashFlav">145 mg</strong></div>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Right Card: ANALYSIS COMPLETE BUTTON -->
+                  <div class="p-dash-card p-dash-complete-card">
+                    <button class="p-dash-btn-complete" id="pDashCompleteBtn">
+                      <span>ANALYSIS COMPLETE</span>
+                      <span class="chevron">›</span>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- OFFICIAL PRINT/PDF CERTIFICATE FOOTER (Visible ONLY during print/PDF export) -->
+              <div class="print-cert-footer">
+                <div>Tamil Nadu Agricultural University & Sathyabama Institute of Science and Technology • Sustainable Food Waste Valorization</div>
+                <div>Digital Multi-Spectral Inference Engine • Official Laboratory Audit Trail</div>
+              </div>
+
+              <!-- Sleek Bottom Action Toolbar -->
+              <div class="p-dash-action-toolbar">
+                <button class="dash-action-btn" id="downloadPdfBtn" title="Download official Publication PDF">
+                  <span>📄</span> Download PDF Report
+                </button>
+                <button class="dash-action-btn" id="printReportBtn" title="Print Clean Certificate / Save as PDF">
+                  <span>🖨️</span> Print / Save As PDF
+                </button>
+                <button class="dash-action-btn" id="emailReportBtn" title="Send certificate to email">
+                  <span>✉️</span> Email Certificate
+                </button>
+                <button class="dash-action-btn" id="saveDeviceBtn" title="Save record to SQLite database">
+                  <span>💾</span> Save Record
+                </button>
+                <button class="dash-action-btn btn-action-new" id="newScanBtn" title="Begin new scan">
+                  <span>🔄</span> New Scan
+                </button>
+              </div>
+
+            </div>
+          </section>
+
+        </main>
+
+        <!-- Professional Website Footer -->
+        <footer class="site-footer">
+          <div class="footer-inner">
+            <div class="footer-brand-box">
+              <div class="footer-logo">
+                <span class="f-leaf">🍃</span>
+                <strong>Smart Peel Analyzer</strong>
+              </div>
+              <p>Patent No. SPA-2026-X1. Embedded Neural Vision & Optical Scale Botanical Waste Valorization Platform.</p>
+              <div class="footer-badges">
+                <span class="f-tag">MobileNetV3</span>
+                <span class="f-tag">PyTorch AI</span>
+                <span class="f-tag">FastAPI</span>
+                <span class="f-tag">SQLite</span>
+              </div>
+            </div>
+            <div class="footer-nav-col">
+              <h4>Platform Workflow</h4>
+              <button onclick="goToStage(1)">1. Dashboard</button>
+              <button onclick="goToStage(2)">2. Place Sample</button>
+              <button onclick="goToStage(4)">4. AI Identification</button>
+              <button onclick="goToStage(5)">5. Digital Load Cell</button>
+              <button onclick="goToStage(6)">6. Nutrient Profile</button>
+              <button onclick="goToStage(8)">8. Final Report</button>
+            </div>
+            <div class="footer-nav-col">
+              <h4>Research & Patents</h4>
+              <button onclick="openModal('hardwareModal')">3D Enclosure Specs</button>
+              <button onclick="openModal('authorsModal')">Authors & Inventors</button>
+              <button onclick="openModal('catalogueModal')">26 Peel Master Catalogue</button>
+              <button onclick="openModal('demoModal')">Optical Video Demo</button>
+              <a href="/docs" target="_blank">Swagger REST API Docs ↗</a>
+            </div>
+            <div class="footer-nav-col footer-status-col">
+              <h4>System Status</h4>
+              <div class="footer-status-pill">
+                <span class="status-indicator-dot"></span>
+                <span>All AI & Hardware Services Online</span>
+              </div>
+              <p class="footer-meta-line">Host: <code>http://localhost:8000</code></p>
+              <p class="footer-meta-line">Neural Model: <code>v1.0.0-mobilenetv3-small</code></p>
+            </div>
+          </div>
+          <div class="footer-bottom-bar">
+            <span>© 2026 Smart Peel Analyzer Patent Research Team. All rights reserved.</span>
+            <span>Sustainable Food Waste Valorization & Circular Economy Platform</span>
+          </div>
+        </footer>
+      </div>
+
+  <!-- =======================================================================
+       MODALS: Scan History, 26-Categories Catalogue, Settings, Email
+       ======================================================================= -->
+
+  <!-- Modal 1: Scan History -->
+  <div class="kiosk-modal-backdrop" id="historyModal">
+    <div class="kiosk-modal-card">
+      <div class="kiosk-modal-header">
+        <h3>
+          <svg style="width:22px; height:22px; fill:var(--accent-blue);" viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+          Device Scan History (SQLite Database)
+        </h3>
+        <button class="modal-close-btn" data-modal-id="historyModal">✕</button>
+      </div>
+      <div class="kiosk-modal-body">
+        <div class="history-items-list" id="historyItemsList">
+          <!-- Populated from SQLite DB -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: 26 Vegetable Peel Categories -->
+  <div class="kiosk-modal-backdrop" id="catalogueModal">
+    <div class="kiosk-modal-card" style="max-width: 820px;">
+      <div class="kiosk-modal-header">
+        <h3>
+          <svg style="width:22px; height:22px; fill:var(--primary-green);" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+          Peel Nutrient Database (26 Categories)
+        </h3>
+        <button class="modal-close-btn" data-modal-id="catalogueModal">✕</button>
+      </div>
+      <div class="kiosk-modal-body">
+        <div class="catalogue-search-bar">
+          <input type="text" class="catalogue-search-input" id="catSearchInput" placeholder="Search by name, scientific botanical name, or category...">
+        </div>
+        <div class="catalogue-grid-26" id="catalogueGrid26">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Settings & Hardware Calibration -->
+  <div class="kiosk-modal-backdrop" id="settingsModal">
+    <div class="kiosk-modal-card" style="max-width: 520px;">
+      <div class="kiosk-modal-header">
+        <h3>
+          <svg style="width:22px; height:22px; fill:var(--accent-purple);" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          Hardware Kiosk Settings
+        </h3>
+        <button class="modal-close-btn" data-modal-id="settingsModal">✕</button>
+      </div>
+      <div class="kiosk-modal-body" style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#f8fafc; border-radius:12px;">
+          <div>
+            <div style="font-weight:700; font-size:14px;">Chamber LED Illumination</div>
+            <div style="font-size:12px; color:#64748b;">Internal daylight 5000K LED strip</div>
+          </div>
+          <input type="checkbox" checked style="width:20px; height:20px; accent-color:var(--primary-green);">
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#f8fafc; border-radius:12px;">
+          <div>
+            <div style="font-weight:700; font-size:14px;">Weight Scale Units</div>
+            <div style="font-size:12px; color:#64748b;">Metric Grams (g) or Ounces (oz)</div>
+          </div>
+          <span style="font-weight:700; color:var(--primary-green); font-size:14px;">Grams (g)</span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#f8fafc; border-radius:12px;">
+          <div>
+            <div style="font-weight:700; font-size:14px;">Backend Database Engine</div>
+            <div style="font-size:12px; color:#64748b;">SQLite 3 • smart_peel_ai.db</div>
+          </div>
+          <span style="font-weight:700; color:#22c55e; font-size:13px;">✔ Connected</span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#f8fafc; border-radius:12px;">
+          <div>
+            <div style="font-weight:700; font-size:14px;">AI Model Architecture</div>
+            <div style="font-size:12px; color:#64748b;">MobileNetV3-Small + Multi-Patch</div>
+          </div>
+          <span style="font-weight:700; color:#22c55e; font-size:13px;">Active</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Email Report Modal -->
+  <div class="kiosk-modal-backdrop" id="emailModal">
+    <div class="kiosk-modal-card" style="max-width: 480px;">
+      <div class="kiosk-modal-header">
+        <h3>
+          <svg style="width:22px; height:22px; fill:var(--accent-blue);" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          Send Report to Email
+        </h3>
+        <button class="modal-close-btn" data-modal-id="emailModal">✕</button>
+      </div>
+      <div class="kiosk-modal-body">
+        <p style="font-size:13.5px; color:#475569; margin-bottom:16px;">
+          Enter the recipient email address to receive the full PDF analysis certificate and nutrient profile.
+        </p>
+        <input type="email" id="userEmailInput" placeholder="recipient@example.com" class="catalogue-search-input" style="margin-bottom:20px;">
+        <button class="btn-report-action btn-send-email" id="sendEmailSubmitBtn" style="justify-content:center;">
+          Transmit Certificate →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Live Camera Viewfinder & Capture Modal -->
+  <div class="kiosk-modal-backdrop" id="cameraModal">
+    <div class="kiosk-modal-card camera-modal-card" style="max-width: 620px;">
+      <div class="kiosk-modal-header">
+        <h3>
+          <svg style="width:22px; height:22px; fill:var(--primary-green);" viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+          Optical Peel Camera Viewfinder
+        </h3>
+        <button class="modal-close-btn" data-modal-id="cameraModal" id="closeCameraBtn">✕</button>
+      </div>
+      <div class="kiosk-modal-body" style="padding:16px; text-align:center;">
+        <div class="camera-stream-box">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <canvas id="cameraCanvas" style="display:none;"></canvas>
+          <div class="camera-reticle">
+            <div class="c-ret-corner c-tl"></div>
+            <div class="c-ret-corner c-tr"></div>
+            <div class="c-ret-corner c-bl"></div>
+            <div class="c-ret-corner c-br"></div>
+            <div class="camera-target-crosshair"></div>
+          </div>
+          <div class="camera-guide-text">Align waste peel inside target frame</div>
+        </div>
+        <div class="camera-controls-bar">
+          <button class="camera-action-btn btn-snap-photo" id="snapPhotoBtn">
+            <span>📸</span> Capture Peel Photo
+          </button>
+          <button class="camera-action-btn btn-flip-cam" id="flipCameraBtn" title="Switch Camera">
+            <span>🔄</span> Switch Camera
+          </button>
+          <input type="file" id="cameraMobileFallback" accept="image/*" capture="environment" style="display:none;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Peel Identification Error / Rejection Modal -->
+  <div class="kiosk-modal-backdrop" id="peelErrorModal">
+    <div class="kiosk-modal-card error-modal-card" style="max-width: 520px; border-top: 4px solid #ef4444;">
+      <div class="kiosk-modal-header" style="background:#fef2f2;">
+        <h3 style="color:#b91c1c;">
+          <svg style="width:24px; height:24px; fill:#ef4444;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          Peel Not Identified
+        </h3>
+        <button class="modal-close-btn" data-modal-id="peelErrorModal">✕</button>
+      </div>
+      <div class="kiosk-modal-body" style="text-align:center; padding:28px 24px;">
+        <div class="error-modal-icon" style="font-size:42px; margin-bottom:8px;">🍂 ❌</div>
+        <h4 style="font-size:18px; font-weight:800; color:#1e293b; margin:12px 0 8px;" id="peelErrorTitle">I Can't Find Any Valid Peel</h4>
+        <p style="font-size:14px; color:#64748b; line-height:1.55; margin-bottom:20px;" id="peelErrorMessage">
+          The uploaded image does not match any recognized fruit or vegetable waste peel in our master database. Please capture or upload a clear photo of an authentic waste peel (e.g., Orange, Carrot, Potato, Beetroot, Cucumber, Banana, Pumpkin, etc.).
+        </p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <button class="btn-report-action btn-download-pdf" id="retryUploadBtn" style="justify-content:center; background:#16a34a;">
+            📷 Retake Camera / Upload
+          </button>
+          <button class="btn-report-action" id="browseSupportedPeelsBtn" style="justify-content:center; background:#0284c7; color:#fff;">
+            📋 Browse Supported Peels (26 Categories)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: Hardware Device (Patent Design) -->
+  <div class="kiosk-modal-backdrop" id="hardwareModal">
+    <div class="kiosk-modal-card hardware-modal-card">
+      <div class="kiosk-modal-header" style="background:#f0fdfa;">
+        <h3 style="color:#00695c;">
+          <svg style="width:24px; height:24px; fill:#00695c;" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-5v2h-4V3H9v2H5c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4V3m-5 13H7v-2h3m5-2h-3v2h3m0-6h-3v2h3m-5-2H7v2h3z"/></svg>
+          Hardware Device (Patent Design) • Model SPA-2026-X1
+        </h3>
+        <button class="modal-close-btn" data-modal-id="hardwareModal">✕</button>
+      </div>
+      <!-- Tab Navigation for 3D and Orthographic Views -->
+      <div class="hardware-tabs-bar" id="hardwareTabsBar">
+        <button class="hw-tab-btn active" data-img="images/hardware/perspective.jpg" data-title="Perspective View (Front-Left)" data-dims="230 mm (W) × 280 mm (D) × 180 mm (H)" data-desc="Isometric 3D perspective showcasing the top lid opened, the circular peel sample tray chamber, the forward-facing touch screen display, and the lower chassis.">Perspective 3D</button>
+        <button class="hw-tab-btn" data-img="images/hardware/front.jpg" data-title="Front View Elevation" data-dims="230 mm (Width) × 180 mm (Height)" data-desc="Orthographic front elevation displaying the operator interface panel, capacitive touch display, master power push button, and auxiliary USB port.">Front View</button>
+        <button class="hw-tab-btn" data-img="images/hardware/side_left.jpg" data-title="Side View (Left)" data-dims="280 mm (Depth) × 180 mm (Height)" data-desc="Profile view from the left side showing the opening arc of the top optical lid, balanced center-of-gravity, and lateral ventilation fins for processor cooling.">Left Side</button>
+        <button class="hw-tab-btn" data-img="images/hardware/side_right.jpg" data-title="Side View (Right)" data-dims="280 mm (Depth) × 180 mm (Height)" data-desc="Right profile view depicting DC input power barrel connector, main chassis hinge, and sealed anti-vibration silicone rubber base feet.">Right Side</button>
+        <button class="hw-tab-btn" data-img="images/hardware/top_open.jpg" data-title="Top View (Chamber Open)" data-dims="230 mm (W) × 280 mm (D)" data-desc="Direct top-down angle revealing circular LED illumination ring, optical quartz viewing window, and removable stainless steel load-cell peel tray.">Top Open</button>
+        <button class="hw-tab-btn" data-img="images/hardware/top_closed.jpg" data-title="Top View (Chamber Closed)" data-dims="230 mm (W) × 280 mm (D)" data-desc="Top view with lid closed and light-sealed with silicone gasket to prevent external ambient illumination interference during reflectance analysis.">Top Closed</button>
+        <button class="hw-tab-btn" data-img="images/hardware/internal.jpg" data-title="Internal Chamber & Sensor Layout" data-dims="Chamber Diameter: 140 mm" data-desc="Cross-section diagram highlighting strain gauge load cell below tray, LED ring board, CMOS sensor focal plane, and mainboard layout.">Internal Sensors</button>
+        <button class="hw-tab-btn" data-img="images/hardware/patent_full_sheet.jpg" data-title="Official Patent Drawing Sheet" data-dims="Patent Application #202441089214 A" data-desc="Complete consolidated orthographic patent illustration sheet as submitted to the Patent Office, with labelled claim callouts.">Patent Sheet</button>
+      </div>
+      <div class="hw-view-content">
+        <div class="hw-main-image-wrap">
+          <img class="hw-main-img" id="hwMainImg" src="images/hardware/perspective.jpg" alt="Hardware Device Patent View">
+        </div>
+        <div class="hw-specs-panel">
+          <div class="hw-spec-badge" id="hwSpecDims">230 mm (W) × 280 mm (D) × 180 mm (H)</div>
+          <h4 style="font-size:16px; font-weight:800; color:#0f172a;" id="hwViewTitle">Perspective View (Front-Left)</h4>
+          <p style="font-size:13px; color:#475569; line-height:1.5;" id="hwViewDesc">
+            Isometric 3D perspective showcasing the top lid opened, the circular peel sample tray chamber, the forward-facing touch screen display, and the lower chassis.
+          </p>
+          <ul class="hw-specs-list">
+            <li>Top optical lid with 12MP multi-spectral CMOS sensor</li>
+            <li>Circular 360° shadow-free CRI>95 daylight LED ring</li>
+            <li>500g high-precision strain-gauge load cell (±0.1g)</li>
+            <li>Integrated forward capacitive touchscreen monitor</li>
+            <li>Food-grade biopolymer molded antimicrobial enclosure</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 8: Authors & Inventors -->
+  <div class="kiosk-modal-backdrop" id="authorsModal">
+    <div class="kiosk-modal-card" style="max-width: 960px; width:95vw;">
+      <div class="kiosk-modal-header" style="background:#f0fdf4;">
+        <h3 style="color:#1b5e20;">
+          <svg style="width:24px; height:24px; fill:#1b5e20;" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          Authors & Patent Inventors • Research Team
+        </h3>
+        <button class="modal-close-btn" data-modal-id="authorsModal">✕</button>
+      </div>
+      <div class="authors-grid-layout">
+        <!-- Author 1 -->
+        <div class="author-profile-card">
+          <img class="author-avatar-img" src="images/authors/author_1.jpg" alt="Dr. R. Senthamizh Selvan">
+          <div class="author-card-name">Dr. R. Senthamizh Selvan</div>
+          <div class="author-card-desig">Principal Inventor & Hardware Architect</div>
+          <div class="author-card-dept">Ph.D. in Embedded Electronics<br>Sathyabama Institute of Science and Technology</div>
+          <div class="author-contrib-badge">Hardware Patent Lead</div>
+        </div>
+        <!-- Author 2 -->
+        <div class="author-profile-card">
+          <img class="author-avatar-img" src="images/authors/author_2.jpg" alt="Dr. K. Annamalai">
+          <div class="author-card-name">Dr. K. Annamalai</div>
+          <div class="author-card-desig">Co-Inventor: Botanical Spectrometry</div>
+          <div class="author-card-dept">Ph.D. in Agricultural Biotechnology<br>Tamil Nadu Agricultural University</div>
+          <div class="author-contrib-badge">Biochemical Calibration</div>
+        </div>
+        <!-- Author 3 -->
+        <div class="author-profile-card">
+          <img class="author-avatar-img" src="images/authors/author_3.jpg" alt="Dr. M. Sangeetha">
+          <div class="author-card-name">Dr. M. Sangeetha</div>
+          <div class="author-card-desig">Co-Inventor: Optical Sensors & Load Cell</div>
+          <div class="author-card-dept">Associate Professor, Department of ECE<br>Instrumentation Engineering</div>
+          <div class="author-contrib-badge">Sensor Integration</div>
+        </div>
+        <!-- Author 4 -->
+        <div class="author-profile-card">
+          <img class="author-avatar-img" src="images/authors/author_4.jpg" alt="Prof. S. Venkatesh">
+          <div class="author-card-name">Prof. S. Venkatesh</div>
+          <div class="author-card-desig">Co-Inventor: Deep Learning & Vision</div>
+          <div class="author-card-dept">Head of AI & Data Science<br>Neural Classification Systems</div>
+          <div class="author-contrib-badge">AI Model & Multi-Crop</div>
+        </div>
+        <!-- Author 5 -->
+        <div class="author-profile-card">
+          <img class="author-avatar-img" src="images/authors/author_5.jpg" alt="Dr. P. Dhanalakshmi">
+          <div class="author-card-name">Dr. P. Dhanalakshmi</div>
+          <div class="author-card-desig">Co-Inventor: Waste Valorization</div>
+          <div class="author-card-dept">Department of Biochemistry<br>Biomass Circular Economy</div>
+          <div class="author-contrib-badge">Organic Valorization</div>
+        </div>
+        <!-- Author 6 -->
+        <div class="author-profile-card">
+          <img class="author-avatar-img" src="images/authors/author_6.jpg" alt="Er. V. Aravindhan">
+          <div class="author-card-name">Er. V. Aravindhan</div>
+          <div class="author-card-desig">Co-Inventor: Touchscreen Kiosk UI</div>
+          <div class="author-card-dept">Senior Embedded Systems Engineer<br>Human-Machine Interface Lab</div>
+          <div class="author-contrib-badge">Touchscreen Engineering</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 9: Machine Video Demo -->
+  <div class="kiosk-modal-backdrop" id="demoModal">
+    <div class="kiosk-modal-card" style="max-width: 860px; width:95vw;">
+      <div class="kiosk-modal-header" style="background:#fff7ed;">
+        <h3 style="color:#e65100;">
+          <svg style="width:24px; height:24px; fill:#e65100;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          Machine Video Demo • How The Machine Detects Waste Peel
+        </h3>
+        <button class="modal-close-btn" data-modal-id="demoModal">✕</button>
+      </div>
+      <div class="demo-cinema-container">
+        <div class="demo-screen-box">
+          <img class="demo-cinema-media" id="demoScreenImg" src="images/demo/machine_working_demo.webp" alt="Machine Working Animation Demo" onerror="this.src='images/demo/step1_take_peel.jpg'">
+        </div>
+        <div class="demo-steps-nav">
+          <div class="demo-step-tile active" data-img="images/demo/step1_take_peel.jpg" data-step="1">
+            <span class="demo-step-num">1</span>
+            <div>
+              <div class="demo-step-title">Take Waste Peel</div>
+              <div style="font-size:11px; color:#64748b;">Raw organic biomass</div>
+            </div>
+          </div>
+          <div class="demo-step-tile" data-img="images/demo/step2_insert_chamber.jpg" data-step="2">
+            <span class="demo-step-num">2</span>
+            <div>
+              <div class="demo-step-title">Insert Chamber</div>
+              <div style="font-size:11px; color:#64748b;">Tray placement & lid lock</div>
+            </div>
+          </div>
+          <div class="demo-step-tile" data-img="images/demo/step3_multispectral_scan.jpg" data-step="3">
+            <span class="demo-step-num">3</span>
+            <div>
+              <div class="demo-step-title">Multispectral Scan</div>
+              <div style="font-size:11px; color:#64748b;">Optical LED illumination</div>
+            </div>
+          </div>
+          <div class="demo-step-tile" data-img="images/demo/step4_ai_detected.jpg" data-step="4">
+            <span class="demo-step-num">4</span>
+            <div>
+              <div class="demo-step-title">AI Identification</div>
+              <div style="font-size:11px; color:#64748b;">Biochemical profile & report</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="kiosk-toast" id="kioskToast">Sample notification message</div>
+
+  <!-- Core JavaScript -->
+  <script src="js/app.js?v=7.0"></script>
+</body>
+</html>

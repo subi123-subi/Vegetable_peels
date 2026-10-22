@@ -56,15 +56,66 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
 # Mount API v1 router
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
+# Locate web directory (HTML, CSS, JS, Images)
+web_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "web"))
 
-# Root endpoint
-@app.get("/", summary="Root Endpoint")
-async def root():
+if os.path.exists(web_dir):
+    css_dir = os.path.join(web_dir, "css")
+    js_dir = os.path.join(web_dir, "js")
+    img_dir = os.path.join(web_dir, "images")
+
+    if os.path.exists(css_dir):
+        app.mount("/css", StaticFiles(directory=css_dir), name="web_css")
+    if os.path.exists(js_dir):
+        app.mount("/js", StaticFiles(directory=js_dir), name="web_js")
+    if os.path.exists(img_dir):
+        app.mount("/images", StaticFiles(directory=img_dir), name="web_images")
+    app.mount("/static", StaticFiles(directory=web_dir), name="web_static")
+
+    @app.get("/", summary="Smart Peel Analyzer Professional Web Application")
+    async def serve_index(request: Request):
+        index_file = os.path.join(web_dir, "index.html")
+        accept = request.headers.get("accept", "")
+        if "application/json" in accept and "text/html" not in accept:
+            return {
+                "message": f"Welcome to {settings.PROJECT_NAME} API",
+                "version": settings.VERSION,
+                "docs_url": f"{settings.API_V1_STR}/docs",
+                "health_check": f"{settings.API_V1_STR}/health",
+            }
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        return {"error": "index.html not found"}
+
+    @app.get("/kiosk", summary="Direct Kiosk HTML Endpoint")
+    async def serve_kiosk():
+        index_file = os.path.join(web_dir, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        return {"message": "Kiosk file not found"}
+else:
+    @app.get("/", summary="Root Endpoint")
+    async def root():
+        return {
+            "message": f"Welcome to {settings.PROJECT_NAME} API",
+            "version": settings.VERSION,
+            "docs_url": f"{settings.API_V1_STR}/docs",
+            "health_check": f"{settings.API_V1_STR}/health",
+        }
+
+
+# API Info endpoint
+@app.get("/api", summary="API Overview")
+async def api_info():
     return {
-        "message": f"Welcome to {settings.PROJECT_NAME} API",
+        "message": f"{settings.PROJECT_NAME} REST API",
         "version": settings.VERSION,
         "docs_url": f"{settings.API_V1_STR}/docs",
         "health_check": f"{settings.API_V1_STR}/health",
@@ -76,3 +127,4 @@ async def root():
 async def root_health():
     from app.api.v1.endpoints.health import health_check
     return await health_check()
+

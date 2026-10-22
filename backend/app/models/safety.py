@@ -1,8 +1,12 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base_class import Base, utc_now
+
+if TYPE_CHECKING:
+    from app.models.vegetable import Vegetable
+    from app.models.nutrient import ScientificSource
 
 
 class SafetyRule(Base):

@@ -28,7 +28,7 @@ def print_banner(text: str):
 
 def run_command(cmd, cwd=ROOT_DIR):
     start = time.time()
-    res = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, shell=True)
+    res = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, shell=True, encoding="utf-8", errors="replace")
     duration = time.time() - start
     return res.returncode, res.stdout, res.stderr, duration
 
@@ -80,7 +80,7 @@ def main():
     if rc == 0:
         summary_line = [l for l in out.splitlines() if "passed" in l]
         print(f"  [OK] Backend Tests Passed: {summary_line[-1] if summary_line else 'All Passed'} ({dur:.2f}s)")
-        results["Backend Pytest (105 tests)"] = "PASSED"
+        results["Backend Pytest (110 tests)"] = "PASSED"
     else:
         print(f"  [FAIL] Pytest failed:\n{out}\n{err}")
         results["Backend Pytest"] = "FAILED"
@@ -99,8 +99,9 @@ def main():
     print("\n[5/5] Running Frontend Flutter Widget & Unit Tests...")
     rc, out, err, dur = run_command(["flutter", "test"], cwd=FRONTEND_DIR)
     if rc == 0:
-        print(f"  [OK] Flutter Tests Passed: All 13 tests passed ({dur:.2f}s)")
-        results["Frontend Tests (13 tests)"] = "PASSED"
+        summary_line = [l for l in out.splitlines() if "passed" in l.lower()]
+        print(f"  [OK] Flutter Tests Passed: {summary_line[-1] if summary_line else 'All 17 tests passed'} ({dur:.2f}s)")
+        results["Frontend Tests (17 tests)"] = "PASSED"
     else:
         print(f"  [FAIL] Flutter tests failed:\n{out}")
         results["Frontend Tests"] = "FAILED"

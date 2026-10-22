@@ -41,3 +41,34 @@ class WasteValorizationResponse(BaseModel):
     edible_culinary_allowed: bool
     total_recommendations: int
     recommendations: List[ReuseRecommendationItem]
+
+
+class WasteCreationItem(BaseModel):
+    id: str
+    title_en: str
+    title_ta: str
+    category: str  # garden_soil, eco_home, culinary_gourmet, arts_crafts, natural_wellness
+    category_name_en: str
+    category_name_ta: str
+    suitable_peels: List[str]
+    difficulty: str  # Easy, Moderate, Ferment
+    prep_time_minutes: int
+    total_time: str
+    estimated_output: str
+    icon_name: str
+    impact_summary_en: str
+    impact_summary_ta: str
+    required_materials_en: List[str]
+    required_materials_ta: List[str]
+    step_by_step_instructions_en: List[str]
+    step_by_step_instructions_ta: List[str]
+    safety_and_storage_en: str
+    safety_and_storage_ta: str
+    scientific_rationale_en: str
+    scientific_rationale_ta: str
+
+
+class WasteCreationsListResponse(BaseModel):
+    total: int
+    categories: List[str]
+    creations: List[WasteCreationItem]

@@ -31,9 +31,9 @@ MODEL_DIR = BASE_DIR / "models"
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
 # Hyperparameters
-NUM_CLASSES = 6
+NUM_CLASSES = 18
 BATCH_SIZE = 16
-NUM_EPOCHS = 12
+NUM_EPOCHS = 10
 LEARNING_RATE = 1e-3
 IMAGE_SIZE = 224
 CONFIDENCE_THRESHOLD = 0.65
@@ -41,11 +41,35 @@ CONFIDENCE_THRESHOLD = 0.65
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 CLASS_METADATA = {
+    "apple_peel": {
+        "slug": "apple",
+        "name_en": "Apple Peel",
+        "name_ta": "ஆப்பிள் தோல்",
+        "scientific_name": "Malus domestica",
+    },
+    "banana_peel": {
+        "slug": "green-plantain",
+        "name_en": "Banana / Plantain Peel",
+        "name_ta": "வாழைக்காய் / வாழைப்பழத் தோல்",
+        "scientific_name": "Musa paradisiaca",
+    },
     "beetroot_peel": {
         "slug": "beetroot",
         "name_en": "Beetroot Peel",
         "name_ta": "பீட்ரூட் தோல்",
         "scientific_name": "Beta vulgaris",
+    },
+    "bitter_gourd_peel": {
+        "slug": "bitter-gourd",
+        "name_en": "Bitter Gourd Peel",
+        "name_ta": "பாகற்காய் தோல்",
+        "scientific_name": "Momordica charantia",
+    },
+    "bottle_gourd_peel": {
+        "slug": "bottle-gourd",
+        "name_en": "Bottle Gourd Peel",
+        "name_ta": "சுரைக்காய் தோல்",
+        "scientific_name": "Lagenaria siceraria",
     },
     "carrot_peel": {
         "slug": "carrot",
@@ -53,11 +77,35 @@ CLASS_METADATA = {
         "name_ta": "கேரட் தோல்",
         "scientific_name": "Daucus carota subsp. sativus",
     },
+    "citrus_peel": {
+        "slug": "orange",
+        "name_en": "Citrus / Orange Peel",
+        "name_ta": "ஆரஞ்சு / சிட்ரஸ் தோல்",
+        "scientific_name": "Citrus sinensis",
+    },
     "cucumber_peel": {
         "slug": "cucumber",
         "name_en": "Cucumber Peel",
         "name_ta": "வெள்ளரி தோல்",
         "scientific_name": "Cucumis sativus",
+    },
+    "garlic_peel": {
+        "slug": "garlic",
+        "name_en": "Garlic Husk / Peel",
+        "name_ta": "பூண்டுத் தோல்",
+        "scientific_name": "Allium sativum",
+    },
+    "ginger_peel": {
+        "slug": "ginger",
+        "name_en": "Ginger Peel",
+        "name_ta": "இஞ்சித் தோல்",
+        "scientific_name": "Zingiber officinale",
+    },
+    "onion_peel": {
+        "slug": "onion",
+        "name_en": "Onion Skin / Peel",
+        "name_ta": "வெங்காயத் தோல்",
+        "scientific_name": "Allium cepa",
     },
     "potato_peel": {
         "slug": "potato",
@@ -70,6 +118,30 @@ CLASS_METADATA = {
         "name_en": "Pumpkin Peel",
         "name_ta": "பூசணிக்காய் தோல்",
         "scientific_name": "Cucurbita moschata",
+    },
+    "radish_peel": {
+        "slug": "radish",
+        "name_en": "Radish Peel",
+        "name_ta": "முள்ளங்கித் தோல்",
+        "scientific_name": "Raphanus sativus",
+    },
+    "ridge_gourd_peel": {
+        "slug": "ridge-gourd",
+        "name_en": "Ridge Gourd Peel",
+        "name_ta": "பீர்க்கங்காய் தோல்",
+        "scientific_name": "Luffa acutangula",
+    },
+    "sweet_potato_peel": {
+        "slug": "sweet-potato",
+        "name_en": "Sweet Potato Peel",
+        "name_ta": "சர்க்கரைவள்ளி கிழங்கு தோல்",
+        "scientific_name": "Ipomoea batatas",
+    },
+    "tomato_skin": {
+        "slug": "tomato",
+        "name_en": "Tomato Skin",
+        "name_ta": "தக்காளித் தோல்",
+        "scientific_name": "Solanum lycopersicum",
     },
     "unsupported_object": {
         "slug": "unsupported",

@@ -378,6 +378,55 @@ def save_nutrient_report(
     )
 
 
+@router.get("/reports/download-pdf", summary="Direct Download PDF Report via GET")
+def direct_download_pdf(
+    vegetable_slug: str = Query("carrot", description="Vegetable slug, e.g. carrot, potato, beetroot"),
+    weight_grams: float = Query(100.0, ge=1.0, le=10000.0, description="Fresh sample weight in grams"),
+    input_weight_type: str = Query("whole", pattern="^(whole|peel)$"),
+    prep_method: str = Query("fresh_raw", description="Preparation method"),
+    pop_group: str = Query("adult_male", description="Demographic RDA standard"),
+    servings: int = Query(1, ge=1, le=20),
+    db: Session = Depends(get_db),
+):
+    """Direct one-click GET endpoint to generate and download a scientific ReportLab PDF report."""
+    input_data = EstimationInput(
+        vegetable_slug=vegetable_slug,
+        input_weight_grams=weight_grams,
+        input_weight_type=input_weight_type,
+        preparation_method=prep_method,
+        population_group=pop_group,
+        servings=servings,
+    )
+    estimation = calculate_nutrient_estimation(db=db, input_data=input_data)
+    est_dict = estimation.model_dump()
+    pdf_bytes = generate_nutrient_pdf(est_dict, report_uuid="RPT-DOWNLOAD")
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="SmartPeel_{vegetable_slug}_Report.pdf"'
+        },
+    )
+
+
+@router.post("/reports/preview-pdf", summary="Generate On-The-Fly PDF from Estimation Input")
+def preview_nutrient_estimation_pdf(
+    payload: EstimationInput,
+    db: Session = Depends(get_db),
+):
+    """Calculates nutrient estimations and returns an on-the-fly generated PDF report directly."""
+    estimation = calculate_nutrient_estimation(db=db, input_data=payload)
+    est_dict = estimation.model_dump()
+    pdf_bytes = generate_nutrient_pdf(est_dict, report_uuid="RPT-ONTHEFLY")
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=SmartPeel_Estimation_{payload.vegetable_slug}.pdf"
+        },
+    )
+
+
 @router.get("/reports/{report_uuid}", response_model=NutrientReportResponse, summary="Get Saved Nutrient Report")
 def get_nutrient_report(
     report_uuid: str,
@@ -422,24 +471,6 @@ def download_nutrient_report_pdf(
         media_type="application/pdf",
         headers={
             "Content-Disposition": f"attachment; filename=SmartPeel_Report_{report.report_uuid}.pdf"
-        },
-    )
-
-
-@router.post("/reports/preview-pdf", summary="Generate On-The-Fly PDF from Estimation Input")
-def preview_nutrient_estimation_pdf(
-    payload: EstimationInput,
-    db: Session = Depends(get_db),
-):
-    """Calculates nutrient estimations and returns an on-the-fly generated PDF report directly."""
-    estimation = calculate_nutrient_estimation(db=db, input_data=payload)
-    est_dict = estimation.model_dump()
-    pdf_bytes = generate_nutrient_pdf(est_dict, report_uuid="RPT-ONTHEFLY")
-    return Response(
-        content=pdf_bytes,
-        media_type="application/pdf",
-        headers={
-            "Content-Disposition": f"attachment; filename=SmartPeel_Estimation_{payload.vegetable_slug}.pdf"
         },
     )
 

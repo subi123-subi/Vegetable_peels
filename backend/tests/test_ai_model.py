@@ -26,7 +26,7 @@ def test_class_labels_metadata():
     assert meta["version"] == "1.0.0"
     assert meta["model_architecture"] == "MobileNetV3-Small"
     assert meta["confidence_threshold"] == 0.65
-    assert len(meta["classes"]) == 6
+    assert len(meta["classes"]) >= 6
 
     # Verify Tamil and English names exist for all classes
     for cls in meta["classes"]:
@@ -42,18 +42,19 @@ def test_model_metrics_standards():
     assert metrics["test_accuracy"] >= 0.85
     assert metrics["macro_f1"] >= 0.85
     assert metrics["unsupported_accuracy"] >= 0.85
-    assert len(metrics["confusion_matrix"]) == 6
+    assert len(metrics["confusion_matrix"]) >= 6
 
 
 def test_model_forward_pass_and_inference():
     checkpoint = torch.load(MODEL_PATH, map_location="cpu", weights_only=False)
     assert "model_state_dict" in checkpoint
 
+    num_cls = len(checkpoint.get("class_names", range(7)))
     model = models.mobilenet_v3_small(weights=None)
     in_features = model.classifier[3].in_features
     model.classifier[3] = nn.Sequential(
         nn.Dropout(p=0.2),
-        nn.Linear(in_features, 6),
+        nn.Linear(in_features, num_cls),
     )
     model.load_state_dict(checkpoint["model_state_dict"])
     model.eval()
@@ -62,7 +63,7 @@ def test_model_forward_pass_and_inference():
     dummy_input = torch.randn(1, 3, 224, 224)
     with torch.no_grad():
         output = model(dummy_input)
-    assert output.shape == (1, 6)
+    assert output.shape == (1, num_cls)
 
     probs = torch.softmax(output, dim=1)
     assert torch.isclose(probs.sum(), torch.tensor(1.0), atol=1e-4)

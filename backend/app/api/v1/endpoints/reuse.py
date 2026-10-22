@@ -10,6 +10,13 @@ from app.schemas.reuse import (
     ReuseMethodResponse,
     ReuseRecommendationItem,
     WasteValorizationResponse,
+    WasteCreationItem,
+    WasteCreationsListResponse,
+)
+from app.services.waste_creations_data import (
+    get_all_creations,
+    get_creation_by_id,
+    WASTE_CREATIONS,
 )
 
 router = APIRouter()
@@ -126,3 +133,47 @@ def get_vegetable_reuse_recommendations(
         total_recommendations=len(items),
         recommendations=items,
     )
+
+
+@router.get(
+    "/creations",
+    response_model=WasteCreationsListResponse,
+    summary="List meaningful creations and DIY upcycling recipes made from vegetable waste",
+)
+def list_meaningful_creations(
+    category: Optional[str] = Query(None, description="Filter by category (eco_home, garden_soil, arts_crafts, culinary_gourmet, natural_wellness, biomaterials)"),
+    vegetable_slug: Optional[str] = Query(None, description="Filter by vegetable suitability (carrot, potato, beetroot, etc.)"),
+    difficulty: Optional[str] = Query(None, description="Filter by difficulty (Easy, Moderate, Ferment)"),
+):
+    """
+    Returns curated, scientifically validated DIY recipes and protocols for converting
+    vegetable peels and organic kitchen residues into meaningful products (bio-enzymes,
+    seedling pots, botanical pigments, bouillon powders, bioplastic films, and foliar teas).
+    """
+    items = get_all_creations(category=category, vegetable_slug=vegetable_slug, difficulty=difficulty)
+    categories = sorted(list(set(c["category"] for c in WASTE_CREATIONS)))
+    return WasteCreationsListResponse(
+        total=len(items),
+        categories=categories,
+        creations=[WasteCreationItem.model_validate(it) for it in items],
+    )
+
+
+@router.get(
+    "/creations/{creation_id}",
+    response_model=WasteCreationItem,
+    summary="Retrieve details for a specific waste creation recipe",
+)
+def get_meaningful_creation_detail(creation_id: str):
+    """
+    Returns step-by-step instructions, material requirements, scientific rationale,
+    and food/chemical safety alerts for a specific waste-to-product creation.
+    """
+    item = get_creation_by_id(creation_id)
+    if not item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Creation '{creation_id}' not found.",
+        )
+    return WasteCreationItem.model_validate(item)
+
